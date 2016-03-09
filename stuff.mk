@@ -12,3 +12,8 @@ Makefile: $(ms) $(subdirs)
 
 $(ms):
 	cd $(dir $(ms)) && git clone $(msrepo)/$(notdir $(ms)).git
+
+subdirs += drop
+
+drop:
+	/bin/ln -fs $(Drop)/Syphilis_and_ARVs/ $@
