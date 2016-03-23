@@ -6,16 +6,17 @@ target pngtarget pdftarget vtarget acrtarget: notarget
 
 ##################################################################
 
-
 # make files
 
-Sources = Makefile .gitignore README.md stuff.mk LICENSE.md
+Sources = Makefile .gitignore README.md stuff.mk LICENSE.md 
 include stuff.mk
 # include $(ms)/perl.def
 
 ##################################################################
 
 ## Content
+
+Sources += $(wildcard *.md)
 
 ######################################################################
 
