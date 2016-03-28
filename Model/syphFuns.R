@@ -4,12 +4,9 @@ expand <- function(x, ...) {
 expand.parlist <- function(x,...) {
     x <- within(x,
        {
-          beta <- c * c_w
+          beta_h = c * c_w
+          beta_s = c * (beta1 * D1 + beta2 * D2)/(D1 + D2)
+          gamma = 1/(D1 + D2)
        })
     return(x)
 }
-
-hill <- function(x,a,b,p) {
-    a*b^p/(b^p+x^p)
-}
-

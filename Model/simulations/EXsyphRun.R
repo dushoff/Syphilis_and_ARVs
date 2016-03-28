@@ -5,4 +5,9 @@ source("../syphFuns.R")
 source("../syphParms.R")
 source("../syphModels.R")
 
-r <- lsoda(unlist(yini), func = gfun(pars.mean), parms = pars.mean, times = c(1:200))
+r <- lsoda(unlist(calc_yini(pars.mean)), func = gfun(pars.mean), parms = pars.mean, times = tvec)
+plot(r)
+
+r2 <- lsoda(unlist(calc_yini(pars.mean, syph = TRUE)), func = gfun(pars.mean, syph = TRUE), parms = pars.mean, times = tvec)
+plot(r2)
+
