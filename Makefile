@@ -2,7 +2,7 @@
 ### Hooks for the editor to set the default target
 current: target
 
-target pngtarget pdftarget vtarget acrtarget: notarget
+target pngtarget pdftarget vtarget acrtarget: base.plots.Rout 
 
 ##################################################################
 
@@ -16,7 +16,15 @@ include stuff.mk
 
 ## Content
 
-Sources += $(wildcard *.md)
+Sources += $(wildcard *.md *.R)
+
+base.sim.Rout: base.parms.Rout functions.Rout model.Rout sim.R
+%.sim.Rout: %.parms.Rout functions.Rout model.Rout sim.R
+	$(run-R)
+
+base.plots.Rout: base.sim.Rout plots.R
+%.plots.Rout: %.sim.Rout plots.R
+	$(run-R)
 
 ######################################################################
 
@@ -28,5 +36,5 @@ Sources += $(wildcard *.md)
 -include $(ms)/git.mk
 -include $(ms)/visual.mk
 
-# -include $(ms)/wrapR.mk
+-include $(ms)/wrapR.mk
 # -include $(ms)/oldlatex.mk
