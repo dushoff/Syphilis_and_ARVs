@@ -1,4 +1,4 @@
-model.mkd
+model.md
 
 ## JD
 

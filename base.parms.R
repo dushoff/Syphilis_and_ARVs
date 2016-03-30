@@ -28,11 +28,15 @@ Pars.skeleton <- list(
 Pars.range <- data.frame(min=c(1/60,0.1,0.05,1/16),
                             max=c(1/40,1,0.25,1/4),
                             row.names=c("mu","rho", "c_w","alpha_h"))
-ltab <- as.data.frame(apply(Pars.range,1,
-                            function(x) exp(seq(log(x[1]),log(x[2]),
-                                                length=n.trial))))
 
-## What do these square brackets do?
+## Non-randomized LHS data frame
+ltab <- as.data.frame(apply(
+	Pars.range, 1, function(x){
+		exp(seq(log(x[1]),log(x[2]), length=n.trial))
+	}
+))
+
+# Randomize and re-data-frame
 ltab[] <- lapply(ltab,sample)
 
 as.parlist <- function(x) {
@@ -40,7 +44,6 @@ as.parlist <- function(x) {
   class(res) <- c("list","parlist")
   return(res)
 }
-
 
 geom_mean <- function(a){
 	exp(mean(log(a)))

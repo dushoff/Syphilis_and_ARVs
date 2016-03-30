@@ -2,7 +2,7 @@
 Structure
 =========
 
-(SI for syphilis)
+(SIS for syphilis)
 × (SIT for HIV)
 × (two risk groups)
 × (one gender)
