@@ -133,7 +133,7 @@ gfun <- function(parameters) {
 			infection <- H.inf.flow + S.inf.flow
 			
 			H.death <- yMat * (StateMat(I.HIV) 
-									+ eps_a * StateMat(T.HIV)) * alpha.H
+				+ eps_a * StateMat(T.HIV)) * alpha.H
 			
 			H.treat <- yMat[I.HIV,] * tau
 			H.treat.flow <- -flow(H.treat, I.HIV) +
