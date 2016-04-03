@@ -6,14 +6,15 @@ Pars.skeleton <- list(
   c = c(40, 5),
   eps_b = 0.4,
   eps_a = 0.5,
-  sigma = 0.015,
   tau = 1,
+  sigma = 0.015,
   beta1 = 0.627,
   beta2 = 0.618,
   D1 = 46/365,
   D2 = 108/365,
+  gamma = 6,
+  delta = 1/5,
   p = 0.25,
-  eps_R = 0.5, ##?
   iniI = 0.001,
   N0 = c(0.2,0.8)
 )
@@ -27,7 +28,7 @@ Pars.skeleton <- list(
 # This should be a table (csv or tsv), not code
 Pars.range <- data.frame(min=c(1/60,0.1,0.05,1/16),
                             max=c(1/40,1,0.25,1/4),
-                            row.names=c("mu","rho", "c_w","alpha_h"))
+                            row.names=c("mu","rho", "c_w","alpha.H"))
 
 ## Non-randomized LHS data frame
 ltab <- as.data.frame(apply(
