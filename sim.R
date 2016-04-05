@@ -1,6 +1,6 @@
 library("deSolve")
 
-tvec <- seq(0,80,by=0.01)
+tvec <- seq(0,80,by=0.1)
 
 base_sim <- lsoda(unlist(calc_yini(pars.mean)), func = g.base, parms = pars.mean, times = tvec)
 

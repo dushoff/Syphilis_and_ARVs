@@ -3,7 +3,7 @@
 "rho" 0.1 1 		##proportion of biased contact [assumption]
 "c_w" 0.05 0.25 	##within-couple transmission [1]
 "alpha.H" 0.0625 0.25 	##HIV induved mortality[1]
-"gamma", 6, 9		##Syphilis treatment rate [2]
+"gamma" 6 9		##Syphilis treatment rate [2]
 
 ##Reference
 

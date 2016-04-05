@@ -1,4 +1,4 @@
-Pars.range = read.table("Pars.range.txt", head = TRUE, row.name = TRUE)
+Pars.range = read.table("Pars.range.txt", head = TRUE, row.name = 1)
 
 ## Non-randomized LHS data frame
 ltab <- as.data.frame(apply(
