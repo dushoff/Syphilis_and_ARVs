@@ -1,55 +1,23 @@
-## Fixed numbers up front
 n.trial <- 1000  ## total number of sims
 set.seed(101)
 
 Pars.skeleton <- list(
-  c = c(40, 5),
-  eps_b = 0.4,
-  eps_a = 0.5,
-  tau = 1,
-  sigma = 0.015,
-  beta1 = 0.627,
-  beta2 = 0.618,
-  D1 = 46/365,
-  D2 = 108/365,
-  gamma = 6,
-  delta = 1/5,
-  p = 0.25,
+  c = c(40, 5),	##partnership change rate [1]
+  eps_b = 0.4, ##decreased transmission ratio due to ART [2]
+  eps_a = 0.5, ##decreased progression rate due to ART [assumption]
+  tau = 1, ##ART treatment rate [2]
+  sigma = 0.015, ##Leaving ART [2]
+  beta1 = 0.627, ##Transmission rate of primary stage(syph) [1]
+  beta2 = 0.618, ##Transmission rate of secondary stage(syph) [1]
+  D1 = 46/365, ##Mean duration of primary stage(syph) [1]
+  D2 = 108/365, ##Mean duration of secondary stage(syph) [1]
+  delta = 1/5, ##Rate at which immunity is lost [1]
+  p = 0.25, ##proportion entering susceptible after treatment [assumption]
   iniI = 0.001,
   N0 = c(0.2,0.8)
 )
 
-##some sources...
+##sources
 
-##Steiner et al. Risk behavior for HIV transmission among gay men...
-##Garnett et al. The Natural History of Syphilis...
-##Granich et al. Universal voluntary HIV testing with...
-
-# This should be a table (csv or tsv), not code
-Pars.range <- data.frame(min=c(1/60,0.1,0.05,1/16),
-                            max=c(1/40,1,0.25,1/4),
-                            row.names=c("mu","rho", "c_w","alpha.H"))
-
-## Non-randomized LHS data frame
-ltab <- as.data.frame(apply(
-	Pars.range, 1, function(x){
-		exp(seq(log(x[1]),log(x[2]), length=n.trial))
-	}
-))
-
-# Randomize and re-data-frame
-ltab[] <- lapply(ltab,sample)
-
-as.parlist <- function(x) {
-  res <- append(x,Pars.skeleton)
-  class(res) <- c("list","parlist")
-  return(res)
-}
-
-geom_mean <- function(a){
-	exp(mean(log(a)))
-}
-
-pars.mean <- as.parlist(apply(Pars.range, 1, geom_mean))
-
-tvec <- seq(0,80,by=0.1)
+##[1] Garnett et al. 1997
+##[2] Granich et al. 2009
