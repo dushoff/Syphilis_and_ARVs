@@ -3,8 +3,6 @@
 
 ## Systematic, simplified variable names: SS SI ST IS
 
-##I looked at Milner and Zhao 2010 for simple SIR syphilis model... I think it seems reasonable..?
-
 FOI.fun <- function(N, Y, beta, rho, c){
 	FOI <- rho * beta * Y/N + (1 - rho) * beta * sum(c * Y)/sum(c * N)
 }
@@ -94,11 +92,16 @@ gfun <- function(parameters) {
 		return(sweep(mat, 2, vec, "*"))
 	}
 	
-	flow <- function(sourceMat, targetVec){
+	dist <- function(sourceMat, targetVec){
 		flowMat <- matrix(0, nrow = 9, ncol = 2)
 		for(i in 1:length(targetVec)){
 			flowMat[targetVec[i],] = sourceMat[i,]
 		}
+		return(flowMat)
+	}
+	
+	flow <- function(from, to, sourceMat){
+		flowMat <- -dist(sourceMat, from) + dist(sourceMat, to)
 		return(flowMat)
 	}
 	
@@ -121,40 +124,31 @@ gfun <- function(parameters) {
 			n.death <- mu * yMat
 			
 			FOI.H <- FOI.fun(N, J.H, beta.HIV, rho, c)
-			HIV.infection <- sweep2(yMat[S.HIV,],FOI.H)
-			H.inf.flow <- -flow(HIV.infection, S.HIV) + 
-				flow(HIV.infection, I.HIV)
+			H.infection <- flow(from = S.HIV, to = I.HIV,
+				sourceMat = sweep2(yMat[S.HIV,],FOI.H))
 			
 			FOI.S <- FOI.fun(N, J.S, beta.syph, rho, c)
-			syph.infection <- sweep2(yMat[S.syph,],FOI.S)
-			S.inf.flow <- -flow(syph.infection, S.syph) +
-				flow(syph.infection, I.syph)
-			
-			infection <- H.inf.flow + S.inf.flow
+			S.infection <- flow(from = S.syph, to = I.syph,
+				sourceMat = sweep2(yMat[S.syph,],FOI.S))
 			
 			H.death <- yMat * (StateMat(I.HIV) 
 				+ eps_a * StateMat(T.HIV)) * alpha.H
 			
-			H.treat <- yMat[I.HIV,] * tau
-			H.treat.flow <- -flow(H.treat, I.HIV) +
-				flow(H.treat, T.HIV)
+			H.treat <- flow(from = I.HIV, to = T.HIV,
+				sourceMat = yMat[I.HIV,] * tau)
 			
-			H.treat.fail <- yMat[T.HIV,] * sigma
-			H.treat.fail.flow <- -flow(H.treat.fail, T.HIV) +
-				flow(H.treat.fail, I.HIV)
+			H.treat.fail <- flow(from = T.HIV, to = I.HIV,
+				sourceMat = yMat[T.HIV,] * sigma)
 			
-			S.treat <- yMat[I.syph,] * gamma
-			S.treat.flow <- -flow(S.treat, I.syph) +
-				(1-p) * flow(S.treat, T.syph) + p * flow(S.treat, S.syph)
+			S.treatMat <- yMat[I.syph,] * gamma
+			S.treat <- -dist(S.treatMat, I.syph) +
+				(1-p) * dist(S.treatMat, T.syph) + p * dist(S.treatMat, S.syph)
 			
-			S.treat.fail <- yMat[T.syph,] * delta
-			S.treat.fail.flow <- -flow(S.treat.fail, T.syph) +
-				flow(S.treat.fail, S.syph)
+			S.immune.loss <- flow(from = T.syph, to = S.syph,
+				sourceMat = yMat[T.syph,] * delta)
 			
-			treatment <- H.treat.flow + S.treat.flow + 
-				H.treat.fail.flow + S.treat.fail.flow
-			
-			dy <- n.birth - n.death + infection - H.death + treatment
+			dy <- n.birth - n.death + H.infection + S.infection - H.death +
+				H.treat + H.treat.fail + S.treat + S.immune.loss
 			
 			dSS <- dy[1,]; dIS <- dy[2,]; dTS <- dy[3,]
 			dSI <- dy[4,]; dII <- dy[5,]; dTI <- dy[6,]
