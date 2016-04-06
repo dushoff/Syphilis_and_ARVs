@@ -1,4 +1,2 @@
-library("deSolve")
-plot(base_sim)
-plot(syph_sim)
+##all plots
 plot(syph_sim2)

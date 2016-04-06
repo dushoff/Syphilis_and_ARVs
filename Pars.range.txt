@@ -1,11 +1,11 @@
 "par" "min" "max"
-"mu" 0.01666667 0.025 	##natural mortality [1]
 "rho" 0.1 1 		##proportion of biased contact [assumption]
-"c_w" 0.05 0.25 	##within-couple transmission [1]
-"alpha.H" 0.0625 0.25 	##HIV induved mortality[1]
-"gamma" 6 9		##Syphilis treatment rate [2]
+"c_w" 0.043 0.160 	##within-couple transmission [1]
+"alpha.H" 0.0625 0.25 	##HIV induved mortality[2]
+"gamma" 6 9		##Syphilis treatment rate [3]
 
 ##Reference
 
-##[1] Champredon et al. 2013
-##[2] Grassly et al. 2004
+##[1] Grant et al. 1987
+##[2] Champredon et al. 2013
+##[3] Grassly et al. 2004

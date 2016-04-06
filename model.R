@@ -77,6 +77,8 @@ g.syph <- function(t,yini,parameters) {
 	})
 }
 
+
+
 gfun <- function(parameters) {
 	pp <- expand(parameters)
 	
@@ -113,7 +115,7 @@ gfun <- function(parameters) {
 	T.syph <- c(7:9)
 	
 	g.syph2 <- function(t,yini,parameters) {
-		with(as.list(c(yini,expand(parameters))), { 
+		with(as.list(c(yini,pp)), { 
 			yMat <- matrix(yini, nrow = 9, ncol =2, byrow = TRUE)
 			
 			N <- colSums(yMat)
