@@ -38,44 +38,44 @@ load("syphData.rda")
 
 comp.names <- c("SS", "IS", "TS", "SI", "II", "TI", "ST", "IT", "TT")
 
-SyphList <- list()
+syphList <- list()
 matNames <- c("highC", "lowC")
 
 tvec <- syph_sim2[,1]
 
 for(i in c(1:2)){
-	SyphList[[matNames[i]]] <- as.data.frame(syph_sim2[,c(1,seq(from = (i+1), by = 2, length.out = 9))])
-	colnames(SyphList[[matNames[i]]]) <- c("time",comp.names)
+	syphList[[matNames[i]]] <- as.data.frame(syph_sim2[,c(1,seq(from = (i+1), by = 2, length.out = 9))])
+	colnames(syphList[[matNames[i]]]) <- c("time",comp.names)
 }
 
-s <- melt(SyphList, id.vars = "time")
+syphFrame <- melt(syphList, id.vars = "time")
 
-sum_list <- list()
+sumList <- list()
 
 prev_name <- c("N","I.HIV","T.HIV","I.syph","T.syph")
 
 for(m in prev_name){
-	sum_list[[m]] <- ldply(SyphList,
+	sumList[[m]] <- ldply(syphList,
 		function(x) data.frame(time = tvec, value = rowSums(x[,get(m)+1])
 	))
 }
 
-mL <- melt(sum_list, id.vars = c("time", ".id"))[,-3]
-
-
+sumFrame <- melt(sumList, id.vars = c("time", ".id"))[,-3]
 ```
 
+
 ```{r allPlot, fig.width = 10}
-ggplot(s, aes(time, value, col = L1)) +
-	geom_line() +
-	facet_wrap(~variable, scale = "free")
+print(ggplot(syphFrame, aes(time, value, col = L1)) 
+	+ geom_line()
+	+ facet_wrap(~variable, scale = "free")
+)
 ```
 
 ## Total population
 
 ```{r population}
 
-ggplot(subset(mL, L1 %in% c("N")), aes(time, value, col = .id)) +
+ggplot(subset(sumFrame, L1 %in% c("N")), aes(time, value, col = .id)) +
 	geom_line() +
 	facet_wrap(~L1, scale = "free")
 
@@ -85,7 +85,7 @@ ggplot(subset(mL, L1 %in% c("N")), aes(time, value, col = .id)) +
 
 ```{r prevalence,fig.width = 10}
 
-ggplot(subset(mL, L1 %in% prev_name[-1]), aes(time, value, col = .id)) +
+ggplot(subset(sumFrame, L1 %in% prev_name[-1]), aes(time, value, col = .id)) +
 	geom_line() +
 	facet_wrap(~L1, scale = "free")
 
