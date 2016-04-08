@@ -1,12 +1,22 @@
+
+as.parlist <- function(x) {
+	res <- append(x,Pars.skeleton)
+	class(res) <- c("list","parlist")
+	return(res)
+}
+
+geom_mean <- function(a){
+	exp(mean(log(a)))
+}
+
 expand <- function(x, ...) {
     UseMethod("expand")
 }
 expand.parlist <- function(x,...) {
     x <- within(x,
        {
-          beta_h = c * c_w
-          beta_s = c * (beta1 * D1 + beta2 * D2)/(D1 + D2)
-          gamma = 1/(D1 + D2)
+          beta.HIV = c * c_w
+          beta.syph = c * beta
        })
     return(x)
 }

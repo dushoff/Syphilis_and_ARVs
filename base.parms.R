@@ -1,54 +1,22 @@
-## Fixed numbers up front
-n.trial <- 1000  ## total number of sims
-set.seed(101)
-
 Pars.skeleton <- list(
-  c = c(40, 5),
-  eps_b = 0.4,
-  eps_a = 0.5,
-  sigma = 0.015,
-  tau = 1,
-  beta1 = 0.627,
-  beta2 = 0.618,
-  D1 = 46/365,
-  D2 = 108/365,
-  p = 0.25,
-  eps_R = 0.5, ##?
-  iniI = 0.001,
-  N0 = c(0.2,0.8)
+  c = c(40, 5),	##partnership change rate [1]
+  mu = 0.05, ##rate of entry/exit from at risk population [1]
+  eps_b = 0.04, ##decreased transmission (ratio) due to ART [3]
+  eps_a = 0.5, ##decreased progression rate (ratio) due to ART [4]
+  tau = 1, ##ART treatment rate [2]
+  sigma = 0.015, ##Leaving ART [2]
+  beta = 0.6, ##Transmission probability per partnership [1]
+  gamma = 6, ##Syphilis treatment rate [5]
+  delta = 1/5, ##Rate at which immunity is lost [1]
+  p = 0.25, ##proportion entering susceptible after treatment [assumption]
+  iniI = 0.001, ##initial proportion of infected [asusmption]
+  N0 = c(0.2,0.8) ##proportion of population group [assumption]
 )
 
-##some sources...
+##sources
 
-##Steiner et al. Risk behavior for HIV transmission among gay men...
-##Garnett et al. The Natural History of Syphilis...
-##Granich et al. Universal voluntary HIV testing with...
-
-# This should be a table (csv or tsv), not code
-Pars.range <- data.frame(min=c(1/60,0.1,0.05,1/16),
-                            max=c(1/40,1,0.25,1/4),
-                            row.names=c("mu","rho", "c_w","alpha_h"))
-
-## Non-randomized LHS data frame
-ltab <- as.data.frame(apply(
-	Pars.range, 1, function(x){
-		exp(seq(log(x[1]),log(x[2]), length=n.trial))
-	}
-))
-
-# Randomize and re-data-frame
-ltab[] <- lapply(ltab,sample)
-
-as.parlist <- function(x) {
-  res <- append(x,Pars.skeleton)
-  class(res) <- c("list","parlist")
-  return(res)
-}
-
-geom_mean <- function(a){
-	exp(mean(log(a)))
-}
-
-pars.mean <- as.parlist(apply(Pars.range, 1, geom_mean))
-
-tvec <- seq(0,80,by=0.1)
+##[1] Garnett et al. 1997
+##[2] Granich et al. 2009
+##[3] Cohen et al. 2011
+##[4] HIV-Causal Collaboration. 2010
+##[5] Grassly et al. 2004

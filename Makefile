@@ -16,7 +16,7 @@ include stuff.mk
 
 ## Content
 
-Sources += $(wildcard *.md *.R)
+Sources += $(wildcard *.md *.R *.range.txt)
 
 base.sim.Rout: base.parms.Rout functions.Rout model.Rout sim.R
 %.sim.Rout: %.parms.Rout functions.Rout model.Rout sim.R
