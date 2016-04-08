@@ -11,7 +11,7 @@ g <- function(t,yini,parameters) {
 		 S <- yini[1:2]
 		 I <- yini[3:4]
 		 T <- yini[5:6]
-		 
+
 		 N = S + I + T
 		 
 		 J = I + eps_b * T ##Treatment decreases the rate of transmission
