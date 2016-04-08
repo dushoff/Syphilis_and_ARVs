@@ -1,17 +1,23 @@
+## All rates are per year. All ratios and probabilities are unitless
+
 Pars.skeleton <- list(
   c = c(40, 5),	##partnership change rate [1]
   mu = 0.05, ##rate of entry/exit from at risk population [1]
-  eps_b = 0.04, ##decreased transmission (ratio) due to ART [3]
-  eps_a = 0.5, ##decreased progression rate (ratio) due to ART [4]
+  eps_b = 0.04, ## relative transmission ratio of people on ART [3]
+  eps_a = 0.5, ## relative mortality ratio of people on ART [4]
   tau = 1, ##ART treatment rate [2]
-  sigma = 0.015, ##Leaving ART [2]
+  sigma = 0.015, ## ART failure/loss rate [2]
   beta = 0.6, ##Transmission probability per partnership [1]
   gamma = 6, ##Syphilis treatment rate [5]
-  delta = 1/5, ##Rate at which immunity is lost [1]
-  p = 0.25, ##proportion entering susceptible after treatment [assumption]
-  iniI = 0.001, ##initial proportion of infected [asusmption]
+  delta = 1/5, ##Rate at which syphilis immunity is lost [1]
+  p = 0., ## proportion treated for syphilis who return immediately to susceptible [5]
+  iniI = 0.001, ##initial proportion of infected [assumption]
   N0 = c(0.2,0.8) ##proportion of population group [assumption]
 )
+
+## Move parameters that are elsewhere (LHS file, check if there are any in model file)
+
+## Add interaction parameters (you can set them to 1 for now, or use values from Bob's email)
 
 ##sources
 
