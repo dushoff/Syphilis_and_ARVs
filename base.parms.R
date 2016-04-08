@@ -12,8 +12,6 @@ Pars.skeleton <- list(
   N0 = c(0.2,0.8) ##proportion of population group [assumption]
 )
 
-Pars.range = read.table("Pars.range.txt", head = TRUE, row.name = 1)
-
 ##sources
 
 ##[1] Garnett et al. 1997
