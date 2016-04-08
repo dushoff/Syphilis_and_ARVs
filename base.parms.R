@@ -6,6 +6,7 @@ Pars.skeleton <- list(
   tau = 1, ##ART treatment rate [2]
   sigma = 0.015, ##Leaving ART [2]
   beta = 0.6, ##Transmission probability per partnership [1]
+  gamma = 6, ##Syphilis treatment rate [5]
   delta = 1/5, ##Rate at which immunity is lost [1]
   p = 0.25, ##proportion entering susceptible after treatment [assumption]
   iniI = 0.001, ##initial proportion of infected [asusmption]
@@ -18,3 +19,4 @@ Pars.skeleton <- list(
 ##[2] Granich et al. 2009
 ##[3] Cohen et al. 2011
 ##[4] HIV-Causal Collaboration. 2010
+##[5] Grassly et al. 2004

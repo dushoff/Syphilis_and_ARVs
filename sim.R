@@ -18,10 +18,8 @@ colnames(ltab) <- Pars.range[,1]
 # Randomize and re-data-frame
 ltab[] <- lapply(ltab,sample)
 
-tvec <- seq(0,80,by=0.1)
-
-base_sim <- lsoda(unlist(calc_yini(pars.mean)), func = g.base, parms = pars.mean, times = tvec)
-
-syph_sim <- lsoda(unlist(calc_yini(pars.mean, syph = TRUE)), func = g.syph, parms = pars.mean, times = tvec)
+tvec <- seq(0,80,by=0.01)
 
 syph_sim2 <- lsoda(unlist(calc_yini(pars.mean, syph = TRUE)), func = gfun(pars.mean), parms = pars.mean, times = tvec)
+
+save("syph_sim2", file = "syphData.rda")

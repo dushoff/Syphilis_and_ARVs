@@ -73,7 +73,7 @@ g.syph <- function(t,yini,parameters) {
 
 		return(list(c(
 			dSS, dIS, dTS, dSI, dII, dTI, dST, dIT, dTT
-		),N = N))
+		))
 	})
 }
 
@@ -158,7 +158,7 @@ gfun <- function(parameters) {
 			
 			return(list(c(
 				dSS, dIS, dTS, dSI, dII, dTI, dST, dIT, dTT
-			),N = N))
+			)))
 		})
 	}
 	return(g.syph2)
