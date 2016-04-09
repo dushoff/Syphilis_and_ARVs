@@ -45,7 +45,7 @@ g.syph <- function(t,yini,parameters) {
 		N <- SS + IS + TS + SI + II + TI + ST + IT + TT
 
 		##Does coinfection affect rate of transmission of both diseases?
-		J.H <- IS + II + IT + eps_b * (TS + TI + TT)
+		J.H <- IS + nu_t * II + IT + eps_b * (TS + nu_t * TI + TT)
 
 		J.S <- SI + II + TI
 
@@ -59,9 +59,9 @@ g.syph <- function(t,yini,parameters) {
 
 		dTS <- - FOI.S * TS -(mu + sigma + eps_a * alpha.H) * TS + tau * IS + p * gamma * TI + delta * TT
 
-		dSI <- FOI.S * SS - FOI.H * SI - mu * SI - gamma * SI 
+		dSI <- FOI.S * SS - nu_r * FOI.H * SI - mu * SI - gamma * SI 
 
-		dII <- FOI.S * IS + FOI.H * SI - (mu + tau + alpha.H) * II + sigma * TI - gamma * II
+		dII <- FOI.S * IS + nu_r * FOI.H * SI - (mu + tau + alpha.H) * II + sigma * TI - gamma * II
 
 		dTI <- FOI.S * TS - (mu + sigma + eps_a * alpha.H) * TI + tau * II - gamma * TI
 
@@ -73,7 +73,7 @@ g.syph <- function(t,yini,parameters) {
 
 		return(list(c(
 			dSS, dIS, dTS, dSI, dII, dTI, dST, dIT, dTT
-		))
+		)))
 	})
 }
 
@@ -119,7 +119,7 @@ gfun <- function(parameters) {
 			yMat <- matrix(yini, nrow = 9, ncol =2, byrow = TRUE)
 			
 			N <- colSums(yMat)
-			J.H <- colSums(yMat[I.HIV,] + eps_b * yMat[T.HIV,])
+			J.H <- colSums(nuT_vec * (yMat[I.HIV,] + eps_b * yMat[T.HIV,]))
 			J.S <- colSums(yMat[I.syph,])
 			
 			n.birth <- sweep2(StateMat(1), mu * N0)
@@ -127,7 +127,7 @@ gfun <- function(parameters) {
 			
 			FOI.H <- FOI.fun(N, J.H, beta.HIV, rho, c)
 			H.infection <- flow(from = S.HIV, to = I.HIV,
-				sourceMat = sweep2(yMat[S.HIV,],FOI.H))
+				sourceMat = nuR_mat * sweep2(yMat[S.HIV,],FOI.H))
 			
 			FOI.S <- FOI.fun(N, J.S, beta.syph, rho, c)
 			S.infection <- flow(from = S.syph, to = I.syph,
