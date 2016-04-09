@@ -1,9 +1,0 @@
-"par" "min" "max"
-"rho" 0.1 1 		##proportion of biased contact [assumption]
-"c_w" 0.043 0.160 	##within-couple transmission [1]
-"alpha.H" 0.0625 0.25 	##HIV induved mortality[2]
-
-##Reference
-
-##[1] Grant et al. 1987
-##[2] Champredon et al. 2013
