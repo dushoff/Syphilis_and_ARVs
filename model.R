@@ -164,16 +164,35 @@ gfun <- function(parameters) {
 	return(g.syph2)
 }
 
-calc_yini <- function(parameters, syph = FALSE){
+calc_yini <- function(parameters, type = 1){
 	with(c(expand(parameters)),{
-		yini <- list(
-			S  = (1 - iniI) * N0,
-			I = iniI * N0,
-			T = c(0,0))
+		yini.co <- list(
+			SS = (1 - iniI) * N0,
+			IS = iniI/2 * N0,
+			TS = c(0,0),
+			SI = iniI/2 * N0,
+			II = c(0,0),
+			TI = c(0,0),
+			ST = c(0,0),
+			IT = c(0,0),
+			TT = c(0,0)
+			)
 		
-		yini2 <- list(
-			SS = (1 - 2 * iniI) * N0,
+		yini.HIV <- list(
+			SS = (1 - iniI) * N0,
 			IS = iniI * N0,
+			TS = c(0,0),
+			SI = c(0,0),
+			II = c(0,0),
+			TI = c(0,0),
+			ST = c(0,0),
+			IT = c(0,0),
+			TT = c(0,0)
+		)
+		
+		yini.syph <- list(
+			SS = (1 - iniI) * N0,
+			IS = c(0,0),
 			TS = c(0,0),
 			SI = iniI * N0,
 			II = c(0,0),
@@ -181,7 +200,13 @@ calc_yini <- function(parameters, syph = FALSE){
 			ST = c(0,0),
 			IT = c(0,0),
 			TT = c(0,0)
-			)
-		if(syph) return(yini2) else return(yini)
+		)
+		if(type == 1){
+			return(yini.co)
+		}else if(type == 2){
+			return(yini.HIV)
+		}else{
+			return(yini.syph)
+		} 
 	})
 }
