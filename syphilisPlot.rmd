@@ -123,6 +123,7 @@ grid.arrange(arrangeGrob(grid.rect(gp=gpar(col="white")), g.HIV, g.syph, g.co, n
 ```{r population}
 
 ggplot(subset(sumFrame[["co"]], L1 %in% c("N")), aes(time, value, col = .id)) +
+	ylim(0, 1) +
 	geom_line() +
 	facet_wrap(~L1, scale = "free")
 
