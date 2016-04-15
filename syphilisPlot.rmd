@@ -32,7 +32,6 @@ T.syph <- c(7:9)
 
 ## All plots
 
-First row and firt column show epidemic curves with only HIV and syphilis, respectively. 3 by 3 plots show epidemic curves when both diseases are present.
 
 ```{r load,echo=FALSE,message=FALSE}
 
@@ -57,7 +56,7 @@ syphFrame <- melt(syphList[["co"]], id.vars = "time")
 
 sumList <- prev_name <- sumFrame <- list()
 
-prev_name[["co"]] <- c("N","I.HIV","T.HIV","I.syph","T.syph")
+prev_name[["co"]] <- c("N","S.HIV","I.HIV","T.HIV","S.syph","I.syph","T.syph")
 prev_name[["HIV"]] <- c("S.HIV","I.HIV","T.HIV")
 prev_name[["syph"]] <- c("S.syph","I.syph","T.syph")
 
@@ -88,19 +87,18 @@ g.co <- ggplot(syphFrame, aes(time, value, col = L1)) +
 	labs(x = NULL, y = NULL) +
 	facet_wrap(~variable, scale = "free")
 
-g.HIV <- ggplot(sumFrame[["HIV"]], aes(time, value, col = .id)) +
-	geom_line() +
-	theme(legend.position="none",
-		panel.margin = unit(1, "lines"),
-		axis.title.y=element_text(margin=margin(0,15,0,0))) +
-	labs(x = NULL, y = NULL)+
-	facet_wrap(~L1, scale = "free")
-
-g.syph <- ggplot(sumFrame[["syph"]], aes(time, value, col = .id)) +
+g.HIV <- ggplot(subset(sumFrame[["co"]], L1 %in% c("S.HIV","I.HIV", "T.HIV")), aes(time, value, col = .id)) +
 	geom_line() +
 	theme(legend.position="none",
 		panel.margin = unit(1, "lines")) +
-	labs(x = NULL, y = NULL) +
+	labs(x = NULL, y = NULL)+
+	facet_wrap(~L1, scale = "free")
+
+g.syph <- ggplot(subset(sumFrame[["co"]], L1 %in% c("S.syph","I.syph", "T.syph")), aes(time, value, col = .id)) +
+	geom_line() +
+	theme(legend.position="none",
+		panel.margin = unit(1, "lines")) +
+	labs(x = NULL, y = NULL)+
 	facet_wrap(~L1, scale = "free", ncol = 1)
 
 lay <- rbind(c(1,2,2,2),
@@ -130,11 +128,14 @@ ggplot(subset(sumFrame[["co"]], L1 %in% c("N")), aes(time, value, col = .id)) +
 
 ```
 
-##Total proportion of infected/treated individuals
+##Separate cases
 
 ```{r prevalence,fig.width = 10}
 
-ggplot(subset(sumFrame[["co"]], L1 %in% prev_name[["co"]][-1]), aes(time, value, col = .id)) +
+ggplot(sumFrame[["HIV"]], aes(time, value, col = .id)) +
+	geom_line() +
+	facet_wrap(~L1, scale = "free")
+ggplot(sumFrame[["syph"]], aes(time, value, col = .id)) +
 	geom_line() +
 	facet_wrap(~L1, scale = "free")
 
