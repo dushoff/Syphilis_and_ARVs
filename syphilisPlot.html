@@ -73,19 +73,19 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </div>
 <div id="assortativity" class="section level3">
 <h3>Assortativity</h3>
-<p>Proportion <span class="math">\(\rho\)</span> of an individual’s mixing is reserved for their own risk group, and the rest is used randomly in the whole population. Force of infection, <span class="math">\(\lambda_i\)</span>, is given by the following equation:</p>
+<p>Proportion <span class="math">\(\rho\)</span> of an individual’s mixing is reserved for their own risk group, and the rest is used randomly in the whole population. Force of infection, <span class="math">\(\lambda_i\)</span>, by a particular group, <span class="math">\(Y_i\)</span>, is given by the following equation:</p>
 <p><span class="math">\[
-\lambda_i = \rho \beta_i \frac{Y_i}{N_i} + (1-\rho) \beta_i \frac{\sum_i c_i Y_i}{\sum_i N_i},
+\lambda_i = \rho \beta_i \frac{Y_i}{N_i} + (1-\rho) \beta_i \frac{\sum_i c_i Y_i}{\sum_i c_i N_i},
 \]</span></p>
-<p>where <span class="math">\(i\)</span> is the mixing group, <span class="math">\(Y\)</span> is the number of individuals infected with a particular disease, <span class="math">\(c_i\)</span> is the partnership rate, <span class="math">\(N_i\)</span> is total number of people in the mixing group, and <span class="math">\(\beta_i = \beta * c_i\)</span> is the transmission probability per partnership of a given disease.</p>
+<p>where <span class="math">\(i\)</span> is the mixing group, <span class="math">\(c_i\)</span> is the partnership rate, <span class="math">\(N_i\)</span> is total number of people in the mixing group, and <span class="math">\(\beta_i = \beta * c_i\)</span> (<span class="math">\(\beta\)</span> is the transmission probability per partnership).</p>
 </div>
 <div id="transmission" class="section level3">
 <h3>Transmission</h3>
 <p>We have 9 states: <span class="math">\(SS_i\)</span>, <span class="math">\(IS_i\)</span>, <span class="math">\(TS_i\)</span>, <span class="math">\(SI_i\)</span>, <span class="math">\(II_i\)</span>, <span class="math">\(TI_i\)</span>, <span class="math">\(ST_i\)</span>, <span class="math">\(IT_i\)</span>, <span class="math">\(TT_i\)</span>, where <span class="math">\(i = 1, 2\)</span>. First letter represents infection status for HIV and the second letter represents infection status for syphilis. Therefore, we have <span class="math">\(J_i^{HIV} = IS_i + II_i + IT_i + \epsilon_{\beta} (TS_i + TI_i + TT_i)\)</span> and <span class="math">\(J_i^{syph} = SI_i + II_i + TI_i\)</span>, which are used to calculate force of infection of two diseases (<span class="math">\(\epsilon_{\beta}&lt;1\)</span> is the relative HIV transmission ratio due to ARV treatment):</p>
 <p><span class="math">\[
 \begin{align}
-\lambda_i^{HIV} &amp;= \rho \beta_i^{HIV} \frac{J_i^{HIV}}{N_i} + (1-\rho) \beta_i^{HIV} \frac{\sum_i c_i J_i^{HIV} }{\sum_i N_i},\\
-\lambda_i^{syph} &amp;= \rho \beta_i^{syph} \frac{J_i^{syph}}{N_i} + (1-\rho) \beta_i^{syph} \frac{\sum_i c_i J_i^{syph}}{\sum_i N_i}.
+\lambda_i^{HIV} &amp;= \rho \beta_i^{HIV} \frac{J_i^{HIV}}{N_i} + (1-\rho) \beta_i^{HIV} \frac{\sum_i c_i J_i^{HIV} }{\sum_i c_i N_i},\\
+\lambda_i^{syph} &amp;= \rho \beta_i^{syph} \frac{J_i^{syph}}{N_i} + (1-\rho) \beta_i^{syph} \frac{\sum_i c_i J_i^{syph}}{\sum_i c_i N_i}.
 \end{align}
 \]</span></p>
 </div>

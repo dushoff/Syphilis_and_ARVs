@@ -23,13 +23,13 @@ output: html_document
 
 ### Assortativity
 
-Proportion $\rho$ of an individual's mixing is reserved for their own risk group, and the rest is used randomly in the whole population. Force of infection, $\lambda_i$, is given by the following equation:
+Proportion $\rho$ of an individual's mixing is reserved for their own risk group, and the rest is used randomly in the whole population. Force of infection, $\lambda_i$, by a particular group, $Y_i$, is given by the following equation:
 
 $$
-\lambda_i = \rho \beta_i \frac{Y_i}{N_i} + (1-\rho) \beta_i \frac{\sum_i c_i Y_i}{\sum_i N_i},
+\lambda_i = \rho \beta_i \frac{Y_i}{N_i} + (1-\rho) \beta_i \frac{\sum_i c_i Y_i}{\sum_i c_i N_i},
 $$
 
-where $i$ is the mixing group, $Y$ is the number of individuals infected with a particular disease, $c_i$ is the partnership rate, $N_i$ is total number of people in the mixing group, and $\beta_i = \beta * c_i$ is the transmission probability per partnership of a given disease.
+where $i$ is the mixing group, $c_i$ is the partnership rate, $N_i$ is total number of people in the mixing group, and $\beta_i = \beta * c_i$ ($\beta$ is the transmission probability per partnership).
 
 ### Transmission
 
@@ -37,8 +37,8 @@ We have 9 states: $SS_i$, $IS_i$, $TS_i$, $SI_i$, $II_i$, $TI_i$, $ST_i$, $IT_i$
 
 $$
 \begin{align}
-\lambda_i^{HIV} &= \rho \beta_i^{HIV} \frac{J_i^{HIV}}{N_i} + (1-\rho) \beta_i^{HIV} \frac{\sum_i c_i J_i^{HIV} }{\sum_i N_i},\\
-\lambda_i^{syph} &= \rho \beta_i^{syph} \frac{J_i^{syph}}{N_i} + (1-\rho) \beta_i^{syph} \frac{\sum_i c_i J_i^{syph}}{\sum_i N_i}.
+\lambda_i^{HIV} &= \rho \beta_i^{HIV} \frac{J_i^{HIV}}{N_i} + (1-\rho) \beta_i^{HIV} \frac{\sum_i c_i J_i^{HIV} }{\sum_i c_i N_i},\\
+\lambda_i^{syph} &= \rho \beta_i^{syph} \frac{J_i^{syph}}{N_i} + (1-\rho) \beta_i^{syph} \frac{\sum_i c_i J_i^{syph}}{\sum_i c_i N_i}.
 \end{align}
 $$
 
