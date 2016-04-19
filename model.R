@@ -48,7 +48,7 @@ gfun <- function(parameters) {
 			
 			N <- colSums(yMat)
 			J.H <- colSums(nuT_vec * (yMat[I.HIV,] + eps_b * yMat[T.HIV,]))
-			J.S <- colSums(yMat[I.syph,])
+			J.S <- colSums(nuHIV_vec * yMat[I.syph,])
 			
 			n.birth <- sweep2(StateMat(1), mu * N0)
 			n.death <- mu * yMat

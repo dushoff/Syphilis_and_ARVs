@@ -19,7 +19,9 @@ output: html_document
 
 * Natural death and birth
 
-* People infected with syphilis are more likely to transmit/receive HIV. This is included in the code but the ratio is set to 1 for now so it's not included in the model description below.
+* People infected with syphilis are more likely to transmit/acquire HIV
+
+* People infected with HIV are mode likely to transmit syphilis and people on ARV are even more likely to transmit syphils
 
 ### Assortativity
 
@@ -33,7 +35,7 @@ where $i$ is the mixing group, $c_i$ is the partnership rate, $N_i$ is total num
 
 ### Transmission
 
-We have 9 states: $SS_i$, $IS_i$, $TS_i$, $SI_i$, $II_i$, $TI_i$, $ST_i$, $IT_i$, $TT_i$, where $i = 1, 2$. First letter represents infection status for HIV and the second letter represents infection status for syphilis. Therefore, we have $J_i^{HIV} = IS_i + II_i + IT_i + \epsilon_{\beta} (TS_i + TI_i + TT_i)$ and $J_i^{syph} = SI_i + II_i + TI_i$, which are used to calculate force of infection of two diseases ($\epsilon_{\beta}<1$ is the relative HIV transmission ratio due to ARV treatment):
+We have 9 states: $SS_i$, $IS_i$, $TS_i$, $SI_i$, $II_i$, $TI_i$, $ST_i$, $IT_i$, $TT_i$, where $i = 1, 2$. First letter represents infection status for HIV and the second letter represents infection status for syphilis. Therefore, we have $J_i^{HIV} = IS_i + \nu_t II_i + IT_i + \epsilon_{\beta} (TS_i + \nu_t TI_i + TT_i)$ and $J_i^{syph} = SI_i + \nu_{HIV} II_i + \nu_{ARV} TI_i$, which are used to calculate force of infection of two diseases ($\epsilon_{\beta}<1$ is the relative HIV transmission ratio due to ARV treatment):
 
 $$
 \begin{align}
@@ -53,8 +55,8 @@ $$
 SS_i' &= \mu N(0)_i -(\lambda_i^{HIV} + \lambda_i^{syph}) SS_i + \delta ST_i - \mu SS_i \\
 IS_i' &= -\lambda_i^{syph} IS_i + \lambda_i^{HIV} SS_i - \tau IS_i + \sigma TS_i + \delta IT_i - \alpha IS_i - \mu IS_i \\
 TS_i' &= -\lambda_i^{syph} TS_i + \tau IS_i - \sigma TS_i + \delta TT_i - \epsilon_{\alpha} \alpha TS_i - \mu TS_i \\
-SI_i' &= -\lambda_i^{HIV} SI_i + \lambda_i^{syph} SS_i - \gamma SI_i - \mu SI_i \\
-II_i' &= \lambda_i^{HIV} SI_i + \lambda_i^{syph} IS_i - \tau II_i + \sigma TI_i - \gamma II_i - \alpha II_i - \mu II_i \\
+SI_i' &= - \nu_r \lambda_i^{HIV} SI_i + \lambda_i^{syph} SS_i - \gamma SI_i - \mu SI_i \\
+II_i' &= \nu_r \lambda_i^{HIV} SI_i + \lambda_i^{syph} IS_i - \tau II_i + \sigma TI_i - \gamma II_i - \alpha II_i - \mu II_i \\
 TI_i' &= \lambda_i^{syph} TS_i + \tau II_i - \sigma_i TI_i - \gamma TI_i - \epsilon_{\alpha} \alpha TI_i - \mu TI_i \\
 ST_i' &= -\lambda_i^{HIV} ST_i + \gamma SI_i - \delta ST_i - \mu ST_i \\
 IT_i' &= \lambda_i^{HIV} ST_i - \tau IT_i + \sigma TT_i + \gamma II_i - \delta IT_i - \alpha IT_i - \mu IT_i \\
@@ -190,7 +192,7 @@ ggplot(subset(sumFrame[["co"]], L1 %in% c("N")), aes(time, value, col = .id)) +
 
 ##Separate cases
 
-```{r prevalence,fig.width = 10}
+```{r sep.prevalence,fig.width = 10}
 
 ggplot(sumFrame[["HIV"]], aes(time, value, col = .id)) +
 	geom_line() +
@@ -200,4 +202,3 @@ ggplot(sumFrame[["syph"]], aes(time, value, col = .id)) +
 	facet_wrap(~L1, scale = "free")
 
 ```
-
