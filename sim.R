@@ -1,15 +1,25 @@
 library("deSolve")
 
-base.pars <- as.parlist(Pars.skeleton)
+n.trial <- 1000  ## total number of sims
+set.seed(101)
+
+Pars.range = read.table("Pars.range.txt", head = TRUE, row.name = 1)
+pars.mean <- as.parlist(apply(Pars.range, 1, geom_mean))
+
+## Non-randomized LHS data frame
+ltab <- as.data.frame(apply(
+	Pars.range, 1, function(x){
+		exp(seq(log(x[1]),log(x[2]), length=n.trial))
+	}
+))
+
+colnames(ltab) <- Pars.range[,1]
+
+# Randomize and re-data-frame
+ltab[] <- lapply(ltab,sample)
 
 tvec <- seq(0,80,by=0.01)
 
-yini.co <- unlist(calc_yini(base.pars, type = 1))
-yini.HIV <- unlist(calc_yini(base.pars, type = 2))
-yini.syph <- unlist(calc_yini(base.pars, type = 3))
+syph_sim2 <- lsoda(unlist(calc_yini(pars.mean, syph = TRUE)), func = gfun(pars.mean), parms = pars.mean, times = tvec)
 
-syph_sim.co <- lsoda(yini.co, func = gfun(base.pars), parms = base.pars, times = tvec)
-syph_sim.HIV <- lsoda(yini.HIV, func = gfun(base.pars), parms = base.pars, times = tvec)
-syph_sim.syph <- lsoda(yini.syph, func = gfun(base.pars), parms = base.pars, times = tvec)
-
-save("syph_sim.co", "syph_sim.HIV", "syph_sim.syph", file = "syphData.rda")
+save("syph_sim2", file = "syphData.rda")

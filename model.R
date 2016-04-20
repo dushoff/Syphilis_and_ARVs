@@ -7,6 +7,78 @@ FOI.fun <- function(N, Y, beta, rho, c){
 	FOI <- rho * beta * Y/N + (1 - rho) * beta * sum(c * Y)/sum(c * N)
 }
 
+g.base <- function(t,yini,parameters) {
+	with(as.list(c(yini,expand(parameters))), 
+	{ 
+		 S <- yini[1:2]
+		 I <- yini[3:4]
+		 T <- yini[5:6]
+		 
+		 N = S + I + T
+		 
+		 J = I + eps_b * T ##Treatment decreases the rate of transmission
+		 
+		 FOI.H = FOI.fun(N, J, beta.HIV, rho, c)
+		 
+		 dS <- mu * N0 - FOI.H * S - mu * S
+		 
+		 dI <- FOI.H * S  - tau * I + sigma * T - mu * I - alpha.H * I
+		 
+		 dT <- tau * I - sigma * T - mu * T - eps_a * alpha.H * T
+		 
+		 return(list(c(dS, dI, dT)))
+	})
+}
+
+g.syph <- function(t,yini,parameters) {
+	with(as.list(c(yini,expand(parameters))), { 
+		SS <- yini[1:2]
+		IS <- yini[3:4]
+		TS <- yini[5:6]
+		SI <- yini[7:8]
+		II <- yini[9:10]
+		TI <- yini[11:12]
+		ST <- yini[13:14]
+		IT <- yini[15:16]
+		TT <- yini[17:18]
+
+		N <- SS + IS + TS + SI + II + TI + ST + IT + TT
+
+		##Does coinfection affect rate of transmission of both diseases?
+		J.H <- IS + II + IT + eps_b * (TS + TI + TT)
+
+		J.S <- SI + II + TI
+
+		FOI.H = FOI.fun(N, J.H, beta.HIV, rho, c)
+		
+		FOI.S = FOI.fun(N, J.S, beta.syph, rho, c)
+		
+		dSS <- mu * N0 -(FOI.S + FOI.H) * SS - mu*SS + p * gamma * SI + delta * ST
+
+		dIS <- -FOI.S * IS + FOI.H * SS - (mu + tau + alpha.H) * IS + sigma * TS + p * gamma * II + delta * IT
+
+		dTS <- - FOI.S * TS -(mu + sigma + eps_a * alpha.H) * TS + tau * IS + p * gamma * TI + delta * TT
+
+		dSI <- FOI.S * SS - FOI.H * SI - mu * SI - gamma * SI 
+
+		dII <- FOI.S * IS + FOI.H * SI - (mu + tau + alpha.H) * II + sigma * TI - gamma * II
+
+		dTI <- FOI.S * TS - (mu + sigma + eps_a * alpha.H) * TI + tau * II - gamma * TI
+
+		dST <- -FOI.H * ST - mu * ST + (1-p) * gamma * SI - delta * ST
+			
+		dIT <- FOI.H * ST - (mu + tau + alpha.H) * IT + sigma * TT  + (1-p) * gamma * II - delta * IT
+			
+		dTT <- - (mu + sigma + eps_a * alpha.H) * TT + tau * IT + (1-p) * gamma * TI - delta * TT
+
+		return(list(c(
+			dSS, dIS, dTS, dSI, dII, dTI, dST, dIT, dTT
+		))
+	})
+}
+
+
+
 gfun <- function(parameters) {
 	pp <- expand(parameters)
 	
@@ -47,15 +119,15 @@ gfun <- function(parameters) {
 			yMat <- matrix(yini, nrow = 9, ncol =2, byrow = TRUE)
 			
 			N <- colSums(yMat)
-			J.H <- colSums(nuT_vec * (yMat[I.HIV,] + eps_b * yMat[T.HIV,]))
-			J.S <- colSums(nuHIV_vec * yMat[I.syph,])
+			J.H <- colSums(yMat[I.HIV,] + eps_b * yMat[T.HIV,])
+			J.S <- colSums(yMat[I.syph,])
 			
 			n.birth <- sweep2(StateMat(1), mu * N0)
 			n.death <- mu * yMat
 			
 			FOI.H <- FOI.fun(N, J.H, beta.HIV, rho, c)
 			H.infection <- flow(from = S.HIV, to = I.HIV,
-				sourceMat = nuR_mat * sweep2(yMat[S.HIV,],FOI.H))
+				sourceMat = sweep2(yMat[S.HIV,],FOI.H))
 			
 			FOI.S <- FOI.fun(N, J.S, beta.syph, rho, c)
 			S.infection <- flow(from = S.syph, to = I.syph,
@@ -92,35 +164,16 @@ gfun <- function(parameters) {
 	return(g.syph2)
 }
 
-calc_yini <- function(parameters, type = 1){
+calc_yini <- function(parameters, syph = FALSE){
 	with(c(expand(parameters)),{
-		yini.co <- list(
-			SS = (1 - iniI) * N0,
-			IS = iniI/2 * N0,
-			TS = c(0,0),
-			SI = iniI/2 * N0,
-			II = c(0,0),
-			TI = c(0,0),
-			ST = c(0,0),
-			IT = c(0,0),
-			TT = c(0,0)
-			)
+		yini <- list(
+			S  = (1 - iniI) * N0,
+			I = iniI * N0,
+			T = c(0,0))
 		
-		yini.HIV <- list(
-			SS = (1 - iniI) * N0,
+		yini2 <- list(
+			SS = (1 - 2 * iniI) * N0,
 			IS = iniI * N0,
-			TS = c(0,0),
-			SI = c(0,0),
-			II = c(0,0),
-			TI = c(0,0),
-			ST = c(0,0),
-			IT = c(0,0),
-			TT = c(0,0)
-		)
-		
-		yini.syph <- list(
-			SS = (1 - iniI) * N0,
-			IS = c(0,0),
 			TS = c(0,0),
 			SI = iniI * N0,
 			II = c(0,0),
@@ -128,13 +181,7 @@ calc_yini <- function(parameters, type = 1){
 			ST = c(0,0),
 			IT = c(0,0),
 			TT = c(0,0)
-		)
-		if(type == 1){
-			return(yini.co)
-		}else if(type == 2){
-			return(yini.HIV)
-		}else{
-			return(yini.syph)
-		} 
+			)
+		if(syph) return(yini2) else return(yini)
 	})
 }

@@ -1,6 +1,6 @@
 
 as.parlist <- function(x) {
-	res <- x
+	res <- append(x,Pars.skeleton)
 	class(res) <- c("list","parlist")
 	return(res)
 }
@@ -17,9 +17,6 @@ expand.parlist <- function(x,...) {
        {
           beta.HIV = c * c_w
           beta.syph = c * beta
-          nuT_vec <- c(1, nu_t, 1)
-          nuR_mat <- matrix(rep(c(1,nu_r,1),2),3,2)
-          nuHIV_vec <- c(1, nu_HIV, nu_ARV)
        })
     return(x)
 }
