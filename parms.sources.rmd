@@ -18,8 +18,8 @@ Pars.skeleton <- list(
   gamma = 6, ##Syphilis treatment rate [5]
   delta = 1/5, ##Rate at which syphilis immunity is lost [1]
   p = 0., ## proportion treated for syphilis who return immediately to susceptible [5]
-  nu_t = 1, ## relative HIV transmission ratio of people who are infected with syphilis [assumption]
-  nu_r = 1, ## relative HIV receiving ratio of people who are infected with syphilis [assumption]
+  nu_t = 2, ## relative HIV transmission ratio of people who are infected with syphilis [8]
+  nu_r = 3, ## relative HIV receiving ratio of people who are infected with syphilis [9]
   nu_is = 1, ## relative syphilis acquiring ratio due to ARV immunosuppression [assumption]
   nu_HIV = 1, ## relative syphilis transmission ratio of people who are infected with HIV [assumption]
   nu_ARV = 1, ## relative syphilis transmission ratio of people who are being treated with ARV [assumption]
@@ -44,3 +44,7 @@ Pars.skeleton <- list(
 6) [Grant et al. 1987](http://www.jstor.org/stable/30136523?seq=1#page_scan_tab_contents)
 
 7) [Champredon et al. 2014](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0082906)
+
+8) [Deschamps et al. 1996](http://annals.org/article.aspx?articleid=709884)
+
+9) [Rottingen et al. 2001](http://journals.lww.com/stdjournal/Abstract/2001/10000/A_Systematic_Review_of_the_Epidemiologic.5.aspx)
