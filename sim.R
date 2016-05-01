@@ -1,25 +1,38 @@
 library("deSolve")
+source("base.parms.R")
+source("model.R")
+source("functions.R")
+source("simFuns.R")
 
-n.trial <- 1000  ## total number of sims
-set.seed(101)
-
-Pars.range = read.table("Pars.range.txt", head = TRUE, row.name = 1)
-pars.mean <- as.parlist(apply(Pars.range, 1, geom_mean))
-
-## Non-randomized LHS data frame
-ltab <- as.data.frame(apply(
-	Pars.range, 1, function(x){
-		exp(seq(log(x[1]),log(x[2]), length=n.trial))
-	}
-))
-
-colnames(ltab) <- Pars.range[,1]
-
-# Randomize and re-data-frame
-ltab[] <- lapply(ltab,sample)
+base.pars <- as.parlist(Pars.skeleton)
 
 tvec <- seq(0,80,by=0.01)
 
-syph_sim2 <- lsoda(unlist(calc_yini(pars.mean, syph = TRUE)), func = gfun(pars.mean), parms = pars.mean, times = tvec)
+yini.co <- unlist(calc_yini(base.pars, type = 1))
+yini.HIV <- unlist(calc_yini(base.pars, type = 2))
+yini.syph <- unlist(calc_yini(base.pars, type = 3))
 
-save("syph_sim2", file = "syphData.rda")
+syph_sim.co <- lsoda(yini.co, func = gfun(base.pars), parms = base.pars, times = tvec)
+syph_sim.HIV <- lsoda(yini.HIV, func = gfun(base.pars), parms = base.pars, times = tvec)
+syph_sim.syph <- lsoda(yini.syph, func = gfun(base.pars), parms = base.pars, times = tvec)
+
+save("syph_sim.co", "syph_sim.HIV", "syph_sim.syph", file = "syphData.rda")
+
+titrationSim <- list()
+titrationSimN <- 10
+titrationSyphSPrev <- matrix(NA, nrow = length(tvec), ncol = titrationSimN)
+titrationSyphIPrev <- matrix(NA, nrow = length(tvec), ncol = titrationSimN)
+titrationSyphTPrev <- matrix(NA, nrow = length(tvec), ncol = titrationSimN)
+
+nuVec <- seq(from = 1.1, to = 2, length.out = 10)
+
+for(i in 1:titrationSimN){
+	titration.pars <- transform(base.pars, nu_is = nuVec[i])
+	titrationSim[[i]] <- lsoda(yini.co, func = gfun(titration.pars), parms = titration.pars, times = tvec)
+	titrationSyphIPrev[,i] <- rowSums(titrationSim[[i]][,8:13])/rowSums(titrationSim[[i]][,-1])
+	titrationSyphSPrev[,i] <- rowSums(titrationSim[[i]][,2:7])/rowSums(titrationSim[[i]][,-1])
+	titrationSyphTPrev[,i] <- rowSums(titrationSim[[i]][,14:19])/rowSums(titrationSim[[i]][,-1])
+}
+
+save("titrationSim", "titrationSyphSPrev", "titrationSyphIPrev", "titrationSyphTPrev", file = "titration.rda")
+

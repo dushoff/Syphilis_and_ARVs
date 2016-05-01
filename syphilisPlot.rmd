@@ -204,3 +204,41 @@ ggplot(sumFrame[["syph"]], aes(time, value, col = .id)) +
 	facet_wrap(~L1, scale = "free")
 
 ```
+
+### Titration
+
+```{r titrate, echo=FALSE, message=FALSE}
+
+load("titration.rda")
+
+titrationDFlist <- list()
+
+titrationName <- c("S", "I", "T")
+
+for(n in titrationName){
+	titrationDFlist[[n]] = data.frame(time = tvec, get(paste0("titrationSyph",n,"Prev")))
+}
+
+titrationMelt <- melt(titrationDFlist, id.vars = "time")
+
+titrationMelt$L1 <- factor(titrationMelt$L1, levels = titrationName <- c("S", "I", "T"))
+
+ggplot(titrationMelt, aes(time, value, col = variable)) + 
+	geom_line() +
+	xlab("Time (years)") +
+	ylab("Prevalence") +
+	theme(legend.position="none") +
+	facet_wrap(~L1, scale = "free")
+	
+
+```
+
+Equilibrium syphilis prevalence from each simulation
+
+```{r}
+print(titrationSyphIPrev[8001,])
+
+```
+
+20 percent increase in equilibrium prevalence as $\nu_{IS}$ go from 1.1 to 2
+
