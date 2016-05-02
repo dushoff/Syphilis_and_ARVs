@@ -16,15 +16,15 @@ Pars.skeleton <- list(
   sigma = 0.015, ## ART failure/loss rate [2]
   beta = 0.6, ##Syphilis transmission probability per partnership [1]
   gamma = 6, ##Syphilis treatment rate [5]
-  delta = 1/5, ##Rate at which syphilis immunity is lost [1]
-  p = 0., ## proportion treated for syphilis who return immediately to susceptible [5]
+  delta = 0.05, ##Rate at which syphilis immunity is lost [5]
+  p = 0, ## proportion treated for syphilis who return immediately to susceptible [5]
   nu_t = 2, ## relative HIV transmission ratio of people who are infected with syphilis [8]
   nu_r = 3, ## relative HIV receiving ratio of people who are infected with syphilis [9]
   nu_is = 1, ## relative syphilis acquiring ratio due to ARV immunosuppression [assumption]
   nu_HIV = 1, ## relative syphilis transmission ratio of people who are infected with HIV [assumption]
   nu_ARV = 1, ## relative syphilis transmission ratio of people who are being treated with ARV [assumption]
   iniI = 0.001, ##initial proportion of infected [assumption]
-  N0 = c(0.2,0.8) ##proportion of population group [assumption]
+  N0 = c(0.1,0.9) ##proportion of population group [assumption]
 )
 ```
 

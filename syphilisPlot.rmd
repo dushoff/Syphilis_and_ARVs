@@ -240,5 +240,9 @@ print(titrationSyphIPrev[8001,])
 
 ```
 
-20 percent increase in equilibrium prevalence as $\nu_{IS}$ go from 1.1 to 2
+36 percent increase in equilibrium prevalence as $\nu_{IS}$ go from 1.1 to 3. Zoomed in plot for syphilis (first 20 years):
 
+```{r}
+matplot(titrationSyphIPrev[1:2000,], type = "l")
+
+```

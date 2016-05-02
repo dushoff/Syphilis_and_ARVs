@@ -24,7 +24,7 @@ titrationSyphSPrev <- matrix(NA, nrow = length(tvec), ncol = titrationSimN)
 titrationSyphIPrev <- matrix(NA, nrow = length(tvec), ncol = titrationSimN)
 titrationSyphTPrev <- matrix(NA, nrow = length(tvec), ncol = titrationSimN)
 
-nuVec <- seq(from = 1.1, to = 2, length.out = 10)
+nuVec <- seq(from = 1.1, to = 3, length.out = 10)
 
 for(i in 1:titrationSimN){
 	titration.pars <- transform(base.pars, nu_is = nuVec[i])
@@ -35,4 +35,3 @@ for(i in 1:titrationSimN){
 }
 
 save("titrationSim", "titrationSyphSPrev", "titrationSyphIPrev", "titrationSyphTPrev", file = "titration.rda")
-
