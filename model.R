@@ -146,27 +146,27 @@ gfun.change <- function(parameters) {
 			
 			FOI.H <- FOI.fun(N, J.H, beta.HIV, rho, c)
 			H.infection <- flow(from = S.HIV, to = I.HIV,
-													sourceMat = nuR_mat * sweep2(yMat[S.HIV,],FOI.H))
+				sourceMat = nuR_mat * sweep2(yMat[S.HIV,],FOI.H))
 			
 			FOI.S <- FOI.fun(N, J.S, beta.syph, rho, c)
 			S.infection <- flow(from = S.syph, to = I.syph,
-													sourceMat = nuIS_mat * sweep2(yMat[S.syph,],FOI.S))
+				sourceMat = nuIS_mat * sweep2(yMat[S.syph,],FOI.S))
 			
 			H.death <- yMat * (StateMat(I.HIV) 
-												 + eps_a * StateMat(T.HIV)) * alpha.H
+				+ eps_a * StateMat(T.HIV)) * alpha.H
 			
 			H.treat <- flow(from = I.HIV, to = T.HIV,
-											sourceMat = yMat[I.HIV,] * tau * treat.start)
+				sourceMat = yMat[I.HIV,] * tau * treat.start)
 			
 			H.treat.fail <- flow(from = T.HIV, to = I.HIV,
-													 sourceMat = yMat[T.HIV,] * sigma)
+				sourceMat = yMat[T.HIV,] * sigma)
 			
 			S.treatMat <- yMat[I.syph,] * gamma
 			S.treat <- -dist(S.treatMat, I.syph) +
 				(1-p) * dist(S.treatMat, T.syph) + p * dist(S.treatMat, S.syph)
 			
 			S.immune.loss <- flow(from = T.syph, to = S.syph,
-														sourceMat = yMat[T.syph,] * delta)
+				sourceMat = yMat[T.syph,] * delta)
 			
 			dy <- n.birth - n.death + H.infection + S.infection - H.death +
 				H.treat + H.treat.fail + S.treat + S.immune.loss
