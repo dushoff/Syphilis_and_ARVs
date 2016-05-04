@@ -73,7 +73,7 @@ We introduce two variables, $T_{start}$ and $c_{inc}$. $T_{start}$ is 0 when $t 
 $$
 \begin{align}
 TS_i' &= - c_{inc} \nu_{IS} \lambda_i^{syph} TS_i\\
-IS_i' &=  c_{inc} \nu_{IS} \lambda_i^{syph} TS_i.
+TI_i' &=  c_{inc} \nu_{IS} \lambda_i^{syph} TS_i.
 \end{align}
 $$
 
