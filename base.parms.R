@@ -19,8 +19,10 @@ Pars.skeleton <- list(
   nu_is = 1, ## relative syphilis acquiring ratio due to ARV immunosuppression [assumption]
   nu_HIV = 1, ## relative syphilis transmission ratio of people who are infected with HIV [assumption]
   nu_ARV = 1, ## relative syphilis transmission ratio of people who are being treated with ARV [assumption]
+  pc.increase = 1, ## increased partnership change rate ratio [assumption]
+  ARV.start = 20, ## ARV starting time [assumption]
   iniI = 0.001, ##initial proportion of infected [assumption]
-  N0 = c(0.1,0.9) ##proportion of population group [assumption]
+  N0 = c(0.05,0.95) ##proportion of population group [assumption]
 )
 
 ##sources

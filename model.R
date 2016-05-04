@@ -1,4 +1,3 @@
-
 FOI.fun <- function(N, Y, beta, rho, c){
 	FOI <- rho * beta * Y/N + (1 - rho) * beta * sum(c * Y)/sum(c * N)
 }
@@ -43,9 +42,14 @@ gfun <- function(parameters) {
 		with(as.list(c(yini,pp)), { 
 			yMat <- matrix(yini, nrow = 9, ncol =2, byrow = TRUE)
 			
+			c_inc = 1
+			
+			syphInf_mat <- matrix(rep(c(1,1,c_inc * nu_is),2),3,2)
+			FOIsyph_adj <- c(1, nu_HIV, c_inc * nu_ARV)
+			
 			N <- colSums(yMat)
 			J.H <- colSums(nuT_vec * (yMat[I.HIV,] + eps_b * yMat[T.HIV,]))
-			J.S <- colSums(nuHIV_vec * yMat[I.syph,])
+			J.S <- colSums(FOIsyph_adj * yMat[I.syph,])
 			
 			n.birth <- sweep2(StateMat(1), mu * N0)
 			n.death <- mu * yMat
@@ -56,7 +60,7 @@ gfun <- function(parameters) {
 			
 			FOI.S <- FOI.fun(N, J.S, beta.syph, rho, c)
 			S.infection <- flow(from = S.syph, to = I.syph,
-				sourceMat = nuIS_mat * sweep2(yMat[S.syph,],FOI.S))
+				sourceMat = syphInf_mat * sweep2(yMat[S.syph,],FOI.S))
 			
 			H.death <- yMat * (StateMat(I.HIV) 
 				+ eps_a * StateMat(T.HIV)) * alpha.H
@@ -129,17 +133,28 @@ gfun.change <- function(parameters) {
 	g.syph2 <- function(t,yini,parameters) {
 		with(as.list(c(yini,pp)), { 
 			
-			if(t < 20){
+			if(t < ARV.start){
 				treat.start = 0
 			}else{
 				treat.start = 1
 			}
 			
+			if(t <30){
+				c_inc = 1
+			}else{
+				c_inc = pc.increase
+			}
+			
+			
+			syphInf_mat <- matrix(rep(c(1,1,c_inc * nu_is),2),3,2)
+			FOIsyph_adj <- c(1, nu_HIV, c_inc * nu_ARV)
+			
 			yMat <- matrix(yini, nrow = 9, ncol =2, byrow = TRUE)
 			
-			N <- colSums(yMat)
-			J.H <- colSums(nuT_vec * (yMat[I.HIV,] + eps_b * yMat[T.HIV,]))
-			J.S <- colSums(nuHIV_vec * yMat[I.syph,])
+			N <- colSums(c_inc * yMat[T.HIV,]) + colSums(yMat[-(T.HIV),])
+			
+			J.H <- colSums(nuT_vec * (yMat[I.HIV,] + c_inc * eps_b * yMat[T.HIV,]))
+			J.S <- colSums(FOIsyph_adj * yMat[I.syph,])
 			
 			n.birth <- sweep2(StateMat(1), mu * N0)
 			n.death <- mu * yMat
@@ -150,7 +165,7 @@ gfun.change <- function(parameters) {
 			
 			FOI.S <- FOI.fun(N, J.S, beta.syph, rho, c)
 			S.infection <- flow(from = S.syph, to = I.syph,
-				sourceMat = nuIS_mat * sweep2(yMat[S.syph,],FOI.S))
+				sourceMat = syphInf_mat * sweep2(yMat[S.syph,],FOI.S))
 			
 			H.death <- yMat * (StateMat(I.HIV) 
 				+ eps_a * StateMat(T.HIV)) * alpha.H
@@ -181,6 +196,66 @@ gfun.change <- function(parameters) {
 		})
 	}
 	return(g.syph2)
+}
+
+
+
+g.test <- function(t,yini,parameters) {
+	with(as.list(c(yini,expand(parameters))), { 
+		SS <- yini[1:2]
+		IS <- yini[3:4]
+		TS <- yini[5:6]
+		SI <- yini[7:8]
+		II <- yini[9:10]
+		TI <- yini[11:12]
+		ST <- yini[13:14]
+		IT <- yini[15:16]
+		TT <- yini[17:18]
+		
+		if(t < ARV.start){
+			treat.start = 0
+		}else{
+			treat.start = 1
+		}
+		
+		if(t <30){
+			c_inc = 1
+		}else{
+			c_inc = pc.increase
+		}
+		
+		N <- SS + IS + c_inc * TS + SI + II + c_inc * TI + ST + IT + c_inc * TT
+		
+		J.H <- IS + nu_t * II + IT + c_inc * eps_b * (TS + nu_t * TI + TT)
+		
+		J.S <- SI + nu_HIV * II + c_inc * nu_ARV * TI
+		
+		FOI.H = FOI.fun(N, J.H, beta.HIV, rho, c)
+		
+		FOI.S = FOI.fun(N, J.S, beta.syph, rho, c)
+		
+		dSS <- mu * N0 -(FOI.S + FOI.H) * SS - mu*SS + p * gamma * SI + delta * ST
+		
+		dIS <- -FOI.S * IS + FOI.H * SS - (mu + treat.start * tau + alpha.H) * IS + sigma * TS + p * gamma * II + delta * IT
+		
+		dTS <- - c_inc * nu_is * FOI.S * TS -(mu + sigma + eps_a * alpha.H) * TS + treat.start * tau * IS + p * gamma * TI + delta * TT
+		
+		dSI <- FOI.S * SS - nu_r * FOI.H * SI - mu * SI - gamma * SI 
+		
+		dII <- FOI.S * IS + nu_r * FOI.H * SI - (mu + treat.start * tau + alpha.H) * II + sigma * TI - gamma * II
+		
+		dTI <- c_inc * nu_is * FOI.S * TS - (mu + sigma + eps_a * alpha.H) * TI + treat.start * tau * II - gamma * TI
+		
+		dST <- - FOI.H * ST - mu * ST + (1-p) * gamma * SI - delta * ST
+		
+		dIT <- FOI.H * ST - (mu + treat.start * tau + alpha.H) * IT + sigma * TT  + (1-p) * gamma * II - delta * IT
+		
+		dTT <- - (mu + sigma + eps_a * alpha.H) * TT + treat.start * tau * IT + (1-p) * gamma * TI - delta * TT
+		
+		return(list(c(
+			dSS, dIS, dTS, dSI, dII, dTI, dST, dIT, dTT
+		)))
+	})
 }
 
 

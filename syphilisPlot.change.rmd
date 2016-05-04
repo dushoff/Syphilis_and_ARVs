@@ -1,0 +1,180 @@
+---
+title: "Syphils/ARV"
+output: html_document
+---
+
+## Model description
+
+### Structure
+
+(SIT for syphilis) $\times$ (SIT for HIV) $\times$ (two risk groups) $\times$ (one gender)
+
+### Features
+
+* Treted people with syphilis go to class T (immune) at a rate $\gamma$ and lose immunity at a rate $\delta$ (go back to S)
+
+* Treated people with HIV go to class T at a rate $\tau$ and have lower transmission rate as well as mortality rate. Treatment may fail or people may stop receiving treatment at a rate $\sigma$ (go back to I)
+
+* Assortative mixing between risk groups
+
+* Natural death and birth
+
+* People infected with syphilis are more likely to transmit/acquire HIV
+
+* People infected with HIV are mode likely to transmit syphilis and people on ARV are even more likely to transmit syphils
+
+* People on ARV are more likely to acquire syphilis
+
+### Assortativity
+
+Proportion $\rho$ of an individual's mixing is reserved for their own risk group, and the rest is used randomly in the whole population. Force of infection, $\lambda_i$, by a particular group, $Y_i$, is given by the following equation:
+
+$$
+\lambda_i = \rho \beta_i \frac{Y_i}{N_i} + (1-\rho) \beta_i \frac{\sum_i c_i Y_i}{\sum_i c_i N_i},
+$$
+
+where $i$ is the mixing group, $c_i$ is the partnership rate, $N_i$ is total number of people in the mixing group, and $\beta_i = \beta * c_i$ ($\beta$ is the transmission probability per partnership).
+
+### Transmission
+
+We have 9 states: $SS_i$, $IS_i$, $TS_i$, $SI_i$, $II_i$, $TI_i$, $ST_i$, $IT_i$, $TT_i$, where $i = 1, 2$. First letter represents infection status for HIV and the second letter represents infection status for syphilis. Therefore, we have $J_i^{HIV} = IS_i + \nu_t II_i + IT_i + \epsilon_{\beta} (TS_i + \nu_t TI_i + TT_i)$ and $J_i^{syph} = SI_i + \nu_{HIV} II_i + \nu_{ARV} TI_i$, which are used to calculate force of infection of two diseases ($\epsilon_{\beta}<1$ is the relative HIV transmission ratio due to ARV treatment):
+
+$$
+\begin{align}
+\lambda_i^{HIV} &= \rho \beta_i^{HIV} \frac{J_i^{HIV}}{N_i} + (1-\rho) \beta_i^{HIV} \frac{\sum_i c_i J_i^{HIV} }{\sum_i c_i N_i},\\
+\lambda_i^{syph} &= \rho \beta_i^{syph} \frac{J_i^{syph}}{N_i} + (1-\rho) \beta_i^{syph} \frac{\sum_i c_i J_i^{syph}}{\sum_i c_i N_i}.
+\end{align}
+$$
+
+### Disease induced mortality
+
+People infected with HIV die at a rate $\alpha$. People receiving ARV treatment have decreased death rate: $\epsilon_{\alpha} \alpha$, where $\epsilon_{\alpha} < 1$.
+
+### Model
+
+$$
+\begin{align}
+SS_i' &= \mu N(0)_i -(\lambda_i^{HIV} + \lambda_i^{syph}) SS_i + \delta ST_i - \mu SS_i \\
+IS_i' &= -\lambda_i^{syph} IS_i + \lambda_i^{HIV} SS_i - \tau IS_i + \sigma TS_i + \delta IT_i - \alpha IS_i - \mu IS_i \\
+TS_i' &= -\nu_{IS} \lambda_i^{syph} TS_i + \tau IS_i - \sigma TS_i + \delta TT_i - \epsilon_{\alpha} \alpha TS_i - \mu TS_i \\
+SI_i' &= - \nu_r \lambda_i^{HIV} SI_i + \lambda_i^{syph} SS_i - \gamma SI_i - \mu SI_i \\
+II_i' &= \nu_r \lambda_i^{HIV} SI_i +\lambda_i^{syph} IS_i - \tau II_i + \sigma TI_i - \gamma II_i - \alpha II_i - \mu II_i \\
+TI_i' &=\nu_{IS}  \lambda_i^{syph} TS_i + \tau II_i - \sigma_i TI_i - \gamma TI_i - \epsilon_{\alpha} \alpha TI_i - \mu TI_i \\
+ST_i' &= -\lambda_i^{HIV} ST_i + \gamma SI_i - \delta ST_i - \mu ST_i \\
+IT_i' &= \lambda_i^{HIV} ST_i - \tau IT_i + \sigma TT_i + \gamma II_i - \delta IT_i - \alpha IT_i - \mu IT_i \\
+TT_i' &= \tau IT_i - \sigma TT_i + \gamma TI_i - \delta TT_i - \epsilon_{\alpha} \alpha TT_i - \mu TT_i
+\end{align}
+$$
+
+### Scenarios for change
+
+We introduce two variables, $T_{start}$ and $c_{inc}$. $T_{start}$ is 0 when $t < 20$ and is 1 otherwise. $c_{inc}$ remains 1 when $t < 30$ and is increased to a fixed value at $t = 30$. We have $\tau_{adj} = T_{start} \tau$, which allows us to start ARV treatment at a Certain time. $c_{inc}$ accounts for the behaviour change by modifying a few equations in the model: $J_i^{HIV} = IS_i + \nu_t II_i + IT_i + c_{inc} \epsilon_{\beta} (TS_i + \nu_t TI_i + TT_i)$, $J_i^{syph} = SI_i + \nu_{HIV} II_i + c_{inc} \nu_{ARV} TI_i$, and $N_i = SS_i + IS_i + SI_i + II_i + ST_i + TT_i + c_{inc} (TS_i + TI_i + TT_i)$. Lastly, we modify the infection term which goes from $TS$ to $TI$ as follows: 
+
+$$
+\begin{align}
+TS_i' &= - c_{inc} \nu_{IS} \lambda_i^{syph} TS_i\\
+IS_i' &=  c_{inc} \nu_{IS} \lambda_i^{syph} TS_i.
+\end{align}
+$$
+
+These equations replace the equations in the above model.
+
+```{r pkgs,warning=FALSE,message=FALSE}
+library("ggplot2"); theme_set(theme_bw())
+scale_colour_discrete <- function(...,palette="Set1") scale_colour_brewer(...,palette=palette)
+scale_fill_discrete <- function(...,palette="Set1") scale_fill_brewer(...,palette=palette)
+library("gridExtra")
+library("plyr")  ## for ldply()
+library("dplyr") ## for full_join()
+library("reshape2")  ## for melt()
+library("GGally")
+library("knitr")
+## devtools::install_github("lionel-/ggstance")
+library("ggstance")
+```
+
+
+```{r index, echo = FALSE}
+
+N <- c(1:9)
+S.HIV <- c(1,4,7)
+I.HIV <- c(2,5,8)
+T.HIV <- c(3,6,9)
+S.syph <- c(1:3)
+I.syph <- c(4:6)
+T.syph <- c(7:9)
+
+```
+
+
+```{r load,echo=FALSE,message=FALSE}
+
+load("syphData2.rda")
+
+tvec <- seq(0,60,by=0.01)
+
+comp.names <- c("SS", "IS", "TS", "SI", "II", "TI", "ST", "IT", "TT")
+
+syphList <- list()
+stateNames <- c("noARV", "ARVonly", "behave", "both")
+
+for(m in stateNames){
+	
+	data <- get(paste0("syph_sim.",m))
+	
+	syphList[[m]]<- data.frame(
+		tvec,
+		lapply(c(1:9),
+			FUN = function(i){rowSums(data[,((2*i) + c(0,1))])/rowSums(data[,-1])}
+		)
+	)	
+	names(syphList[[m]]) <- c("time", comp.names)
+}
+
+
+sumList <- prev_name <- list()
+
+prev_name <- c("N","S.HIV","I.HIV","T.HIV","S.syph","I.syph","T.syph")
+
+for(s in stateNames){
+	sumList[[s]] <- data.frame(
+		tvec,
+		lapply(prev_name,
+			FUN = function(x){rowSums(syphList[[s]][,get(x)+1])}
+		)
+	)
+	names(sumList[[s]]) <- c("time", prev_name)
+}
+
+names(syphList) <- names(sumList) <- c("ARV not introduced", "ARV increases susceptibility only", "ARV changes behaviour only", "ARV affects susceptibility and behaviour")
+
+syphFrame <- melt(syphList, id.vars = "time")
+
+
+sumFrame <- melt(sumList, id.vars = "time")
+```
+
+
+```{r prevalence, fig.width = 10, echo = FALSE}
+
+ggplot(subset(sumFrame, variable %in% c("S.HIV","I.HIV", "T.HIV")), aes(time, value, col = L1)) +
+	geom_line() +
+	labs(x = "Time (years)", y = "Prevalence") +
+	facet_wrap(~variable, scale = "free")
+
+ggplot(subset(sumFrame, variable %in% c("S.syph","I.syph","T.syph")), aes(time, value, col = L1)) +
+	geom_line() +
+	labs(x = "Time (years)", y = "Prevalence") +
+	facet_wrap(~variable, scale = "free")
+
+
+```
+
+```{r all, fig.width = 10, fig.height = 8}
+
+ggplot(syphFrame, aes(time, value, col = L1)) +
+	geom_line() +
+	facet_wrap(~variable, scale = "free")
+
+
+```
