@@ -1,0 +1,38 @@
+\documentclass{article}
+
+%\bibpunct{(}{)}{;}{a}{}{,}
+\usepackage{natbib}
+\usepackage{palatino}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{enumerate}
+\usepackage[left=50pt,
+            textwidth=345pt,
+            marginparsep=25pt,
+            marginparwidth=124pt]{geometry}
+%\usepackage[margin=1in]{geometry}
+
+\usepackage{changes}
+\usepackage[backgroundcolor=lightgray,textsize=small]{todonotes}
+
+\title{Appendix}
+
+\begin{document}
+\maketitle
+
+\section{Model structure}
+
+We developed a susceptible-infective-treated coinfection model with heterogeneous mixing. Model consists of 18 states which are classified by syphilis and HIV infection status, and risk group: $SS_i$, $IS_i$, $TS_i$, $SI_i$, $II_i$, $TI_i$, $ST_i$, $IT_i$, and $TT_i$. Given a state $XY_i$, $X$ represents the HIV infection status; $Y$ represents the syphilis infection status; and $i$ represents the risk group. For simplicity, we do not consider progression through different stages of the disease, and assume that there are only two risk groups: $i = 1,2$.
+
+We assume that all individuals leave at-risk population at a rate $\mu$, and individuals enter at-risk population as $SS$ (susceptible to both diseas) at a constant rate that is proportional to the proportion of each risk group at a disease-free equilibrium: $\mu N_0$. Individuals infected syphilis receive treatment (acquiring partial immunity) at a rate $\gamma$ and lose immunity (becoming susceptible) at a rate $\delta$. Individuals infected with HIV receive ARV treatment at a rate $\tau$
+
+\input{ARV_parms.tex}
+
+\bibliographystyle{chicago}
+\bibliography{ref}
+\end{document}
+
+
