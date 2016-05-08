@@ -9,6 +9,7 @@
 \usepackage{graphicx}
 \usepackage{url}
 \usepackage{enumerate}
+\usepackage[colorlinks = true, linkcolor = blue, urlcolor=blue,citecolor = MidnightBlue]{hyperref}
 \usepackage[left=50pt,
             textwidth=345pt,
             marginparsep=25pt,
@@ -18,21 +19,84 @@
 \usepackage{changes}
 \usepackage[backgroundcolor=lightgray,textsize=small]{todonotes}
 
+<<setup,echo=FALSE>>=
+library("knitr")
+opts_chunk$set(echo=FALSE,error=FALSE,fig.width=8,fig.height=4) #
+## https://github.com/yihui/tikzDevice/issues/46 
+local({
+    hook_document <- knitr::knit_hooks$get('document')
+    knitr::knit_hooks$set(document = function(x){
+        res <- hook_document(x)
+        gsub('\\usepackage[]{color}', '\\usepackage[usenames,dvipsnames]{xcolor}', res, fixed = TRUE)
+  })
+})
+@
+
 \title{Appendix}
 
 \begin{document}
 \maketitle
 
-\section{Model structure}
+\section{Model}
 
-We developed a susceptible-infective-treated coinfection model with heterogeneous mixing. Model consists of 18 states which are classified by syphilis and HIV infection status, and risk group: $SS_i$, $IS_i$, $TS_i$, $SI_i$, $II_i$, $TI_i$, $ST_i$, $IT_i$, and $TT_i$. Given a state $XY_i$, $X$ represents the HIV infection status; $Y$ represents the syphilis infection status; and $i$ represents the risk group. For simplicity, we do not consider progression through different stages of the disease, and assume that there are only two risk groups: $i = 1,2$.
+\subsection{Model structure}
 
-We assume that all individuals leave at-risk population at a rate $\mu$, and individuals enter at-risk population as $SS$ (susceptible to both diseas) at a constant rate that is proportional to the proportion of each risk group at a disease-free equilibrium: $\mu N_0$. Individuals infected syphilis receive treatment (acquiring partial immunity) at a rate $\gamma$ and lose immunity (becoming susceptible) at a rate $\delta$. Individuals infected with HIV receive ARV treatment at a rate $\tau$
+We developed a susceptible-infective-treated coinfection model with heterogeneous mixing. Model consists of 9 states which are classified by syphilis and HIV infection status: $SS_i$, $IS_i$, $TS_i$, $SI_i$, $II_i$, $TI_i$, $ST_i$, $IT_i$, and $TT_i$. Given a state $XY_i$, $X$ represents the HIV infection status; $Y$ represents the syphilis infection status; and $i$ represents the risk group. For simplicity, we do not consider progression through different stages of the disease, and assume that there are only two risk groups: $i = 1,2$.
 
-\input{ARV_parms.tex}
+We assume that all individuals leave at-risk population at a rate $\mu$, and individuals enter at-risk population as $SS$ (susceptible to both diseas) at a constant rate that is proportional to the proportion of each risk group at a disease-free equilibrium: $\mu N_0$. Individuals infected syphilis receive treatment (acquiring partial immunity) at a rate $\gamma$ and lose immunity (becoming susceptible) at a rate $\delta$. Individuals infected with HIV receive ARV treatment at a rate $\tau$. They can also leave ARV treament or treatment may fail (entering infective compartment) at a rate $\sigma$. Individuals infected with HIV die at a rate $\alpha$ but if they're receiving ARV treatment, they die at a slower rate of $\epsilon_{\alpha} \alpha$, where $\epsilon_{\alpha} < 1$. Individuals infected with syphilis and HIV can infect a susceptible partner at a probability of $\beta_{syph}$ and $\beta_{HIV}$ per partnership, respectively. ARV treatment reduces HIV transmission rate by the factor of $\epsilon_{\beta}$, and syphilis infection increases acuiqition and transmission rate of HIV by the factor of $\nu_r$ and $\nu_t$, respectively \citep{deschamps1996heterosexual, rottingen2001systematic}. For simplicity, we do not consider explicit partnership dynamics but we assume assortative mixing.
+
+\subsection{Assortativity}
+
+Assortative mixing is modeled based on the work of \cite{grassly2005host}. Proportion $\rho$ of an individual's mixing is reserved for their own risk group, and the rest is used randomly in the whole population. Force of infection, $\lambda_i$, that susceptible individuals in a risk group, $i$, experience from a particular disease is given by the following equation:
+
+\begin{equation}
+\lambda_i = \rho \beta_i \frac{Y_i}{N_i} + (1-\rho) \beta_i \frac{\sum_i c_i Y_i}{\sum_i c_i N_i},
+\end{equation}
+
+where $i$ is the mixing group, $c_i$ is the partnership rate, $N_i$ is total number of people in the mixing group, and $\beta_i = \beta * c_i$ ($\beta$ is the transmission probability per partnership of the disease).
+
+\subsection{Transmission}
+
+In the equations introduced above, $Y_i$ is the number of individuals in a risk group $i$ that are infected with a particular disease. However, in order to account for varying transmissibility depending on the infection status, We define $J_i^{HIV} = IS_i + \nu_t II_i + IT_i + \epsilon_{\beta} (TS_i + \nu_t TI_i + TT_i)$ and $J_i^{syph} = SI_i + II_i + TI_i$, which are used to calculate force of infection of two diseases:
+
+\begin{equation}
+\begin{aligned}
+\lambda_i^{HIV} &= \rho \beta_i^{HIV} \frac{J_i^{HIV}}{N_i} + (1-\rho) \beta_i^{HIV} \frac{\sum_i c_i J_i^{HIV} }{\sum_i c_i N_i},\\
+\lambda_i^{syph} &= \rho \beta_i^{syph} \frac{J_i^{syph}}{N_i} + (1-\rho) \beta_i^{syph} \frac{\sum_i c_i J_i^{syph}}{\sum_i c_i N_i}.
+\end{aligned}
+\end{equation}
+
+Increased susceptibility to HIV due to syphilis is modeled by multiplying the term $\nu_r$ to the infection term going from $SI_i$ to $II_i$: $SI_i' = - \nu_r \lambda_i^{HIV} SI_i$ and $II_i' = - \nu_r \lambda_i^{HIV} SI_i$.
+
+\subsection{Mathematical model}
+
+\begin{equation}
+\begin{aligned}
+SS_i' &= \mu N(0)_i -(\lambda_i^{HIV} + \lambda_i^{syph}) SS_i + \delta ST_i - \mu SS_i \\
+IS_i' &= -\lambda_i^{syph} IS_i + \lambda_i^{HIV} SS_i - \tau IS_i + \sigma TS_i + \delta IT_i - \alpha IS_i - \mu IS_i \\
+TS_i' &= -\lambda_i^{syph} TS_i + \tau IS_i - \sigma TS_i + \delta TT_i - \epsilon_{\alpha} \alpha TS_i - \mu TS_i \\
+SI_i' &= - \nu_r \lambda_i^{HIV} SI_i + \lambda_i^{syph} SS_i - \gamma SI_i - \mu SI_i \\
+II_i' &= \nu_r \lambda_i^{HIV} SI_i +\lambda_i^{syph} IS_i - \tau II_i + \sigma TI_i - \gamma II_i - \alpha II_i - \mu II_i \\
+TI_i' &=  \lambda_i^{syph} TS_i + \tau II_i - \sigma_i TI_i - \gamma TI_i - \epsilon_{\alpha} \alpha TI_i - \mu TI_i \\
+ST_i' &= -\lambda_i^{HIV} ST_i + \gamma SI_i - \delta ST_i - \mu ST_i \\
+IT_i' &= \lambda_i^{HIV} ST_i - \tau IT_i + \sigma TT_i + \gamma II_i - \delta IT_i - \alpha IT_i - \mu IT_i \\
+TT_i' &= \tau IT_i - \sigma TT_i + \gamma TI_i - \delta TT_i - \epsilon_{\alpha} \alpha TT_i - \mu TT_i
+\end{aligned}
+\end{equation}
+
+\subsection{Delayed introduction of ARV}
+
+Instead of using the model as it is above, we introduce ARV treatment 20 years after the beginning of the simulation. It is simply done by multiplying $T_{start}$ to $\tau$ ($\tau_{adj} = T_start \tau$) and setting $T_{start} = 0$ when $t<20$ and 1 otherwise. With the introduction of ARV, we introduce two more variables to the model: $\nu_{IS}$ and $c_{inc}$. $\nu_{IS}$ is the ratio of increased susceptibility to syphilis due to ARV immunosuppression effect and $c_{inc}$ is the effect of ARV on behaviour (also given as a ratio).  $\nu_{IS}$ is simply multiplied to syphilis infection term going from $TS_i$ to $TI_i$. $TS_i' = - \nu_{IS} \lambda_i^{syph} TS_i$ and $TI_i' = \nu_{IS} \lambda_i^{syph} TS_i$.
+
+Since, $c_{inc}$ accounts for the behaviour change, ??? (need to decide... global? or only ARV treated?)
+
+These equations replace the equations in the above model.
 
 \bibliographystyle{chicago}
 \bibliography{ref}
+
+\input{ARV_parms.tex}
+
 \end{document}
 
 
