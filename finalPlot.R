@@ -12,7 +12,7 @@ library("plyr")  ## for ldply()
 library("reshape2")  ## for melt()
 library("GGally")
 ## devtools::install_github("lionel-/ggstance")
-library("ggstance")
+# library("ggstance")
 
 base.pars <- as.parlist(Pars.skeleton)
 
