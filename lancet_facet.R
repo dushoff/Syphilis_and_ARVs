@@ -24,6 +24,6 @@ print(
 	)
 	# + scale_colour_discrete(name="Behavior change")
 	+ facet_wrap (~ Susc)
-	+ geom_vline(x=20, linetype="dotted")
+	# + geom_vline(x=20, linetype="dotted")
 )
 
