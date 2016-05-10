@@ -88,9 +88,19 @@ TT_i' &= \tau IT_i - \sigma TT_i + \gamma TI_i - \delta TT_i - \epsilon_{\alpha}
 
 Instead of using the model as it is above, we introduce ARV treatment 20 years after the beginning of the simulation. It is simply done by multiplying $T_{start}$ to $\tau$ ($\tau_{adj} = T_start \tau$) and setting $T_{start} = 0$ when $t<20$ and 1 otherwise. With the introduction of ARV, we introduce two more variables to the model: $\nu_{IS}$ and $c_{inc}$. $\nu_{IS}$ is the ratio of increased susceptibility to syphilis due to ARV immunosuppression effect and $c_{inc}$ is the effect of ARV on behaviour (also given as a ratio).  $\nu_{IS}$ is simply multiplied to syphilis infection term going from $TS_i$ to $TI_i$. $TS_i' = - \nu_{IS} \lambda_i^{syph} TS_i$ and $TI_i' = \nu_{IS} \lambda_i^{syph} TS_i$.
 
-Since, $c_{inc}$ accounts for the behaviour change, ??? (need to decide... global? or only ARV treated?)
+With the introdction of ARV, behaviour change is introduced to people who are receiving ARV. The behaviour change is modeled by multiplying $c_{inc}$ to the partnership change rate of those who are receiving ARV. It is done by modifying $J$, $N$, as well as the infection term going from $TS_i$ ti $TI_i$:
 
-These equations replace the equations in the above model.
+\begin{equation}
+\begin{aligned}
+J_i^{HIV} &= IS_i + \nu_t II_i + IT_i + c_{inc} \epsilon_\beta (TS_i + \nu_t TI_i + TT_i), \\
+J_i^{syph} &= SI_i + II_i + c_{inc} TI_i, \\
+N_i &= SS_i + IS_i + SI_i +II_i + ST_i + TT_i + c_{inc} (TS_i + TI_i + TT_i)\\
+TS_i' &= - c_{inc} \nu_{IS} \lambda_i^{syph} TS_i\\
+TI_i' &= c_{inc} \nu_{IS} \lambda_i^{syph} TS_i.
+\end{aligned}
+\end{equation}
+
+Increase in behaviour change is modeled by using the exponential function: $c_{inc} = c_f + (c_0-c_f)exp((T_{start}-t)/T_c)$. These equations replace the equations in the above model.
 
 \bibliographystyle{chicago}
 \bibliography{ref}
