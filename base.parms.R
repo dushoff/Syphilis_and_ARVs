@@ -21,7 +21,7 @@ Pars.skeleton <- list(
   nu_ARV = 1, ## relative syphilis transmission ratio of people who are being treated with ARV [assumption]
   pc.increase = 1, ## increased partnership change rate ratio [assumption]
   ARV.start = 20, ## ARV starting time [assumption]
-  behave.start = 30, ## behaviour change starting time
+  # behave.start = 30, ## behaviour change starting time
   T_c = 5, ## characteristic time
   iniI = 0.001, ##initial proportion of infected [assumption]
   N0 = c(0.05,0.95) ##proportion of population group [assumption]

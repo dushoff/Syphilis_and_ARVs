@@ -6,9 +6,8 @@ library("plyr")  ## for ldply()
 library("reshape2")  ## for melt()
 library("GGally")
 
-syphInc <- function(dat, tmin=0){
+syphInc <- function(dat){
 	df <- as.data.frame(dat)
-	df <- subset(df, time>tmin)
 	return(data.frame(
 		time = df$time, 
 		Prevalence = rowSums(df[,8:13])/rowSums(df[,2:19])
@@ -20,12 +19,13 @@ scenFrame <- function(simList){
 	prevFrame <- melt(prevList, id.vars = "time")
 	prevFrame$scenario <- factor(prevFrame$L1)
 	levels(prevFrame$scenario) = c(
-		"No behaviour change", "Slow change", "Fast change"
+		"None", "Slow", "Fast"
 	)
 	return(prevFrame)
 }
 
 framePlot <- function(f, ftitle){
+	f <- subset(f, L1==1 | time > behave.start)
 	return((ggplot(f , aes(time, value, col = scenario))
 		+ geom_line()
 		+ ggtitle(ftitle)
@@ -42,20 +42,7 @@ baseFrame <- scenFrame(list(base.only.sim, base.slow.sim, base.fast.sim))
 bp <- framePlot(baseFrame, "No biological response")
 
 suscFrame <- scenFrame(list(susc.only.sim, susc.slow.sim, susc.fast.sim))
-sp <- framePlot(baseFrame, "Increased susceptibility")
-
+sp <- framePlot(suscFrame, "Increased susceptibility")
 
 print(bp)
-base.only.sim <- as.data.frame(base.only.sim)
-base.slow.sim <- as.data.frame(base.slow.sim)
-base.fast.sim <- as.data.frame(base.fast.sim)
-
-base.slow.sim <- subset(base.slow.sim, time>behave.start)
-base.fast.sim <- subset(base.fast.sim, time>behave.start)
-base.only.sim <- as.data.frame(base.only.sim)
-base.slow.sim <- as.data.frame(base.slow.sim)
-base.fast.sim <- as.data.frame(base.fast.sim)
-
-base.slow.sim <- subset(base.slow.sim, time>behave.start)
-base.fast.sim <- subset(base.fast.sim, time>behave.start)
-# print(grid.arrange(bp, sp, nrow = 1))
+print(sp)

@@ -1,13 +1,9 @@
 library("deSolve")
-source("base.parms.R")
-source("model.R")
-source("functions.R")
-source("simFuns.R")
 
 base.pars <- as.parlist(Pars.skeleton)
 
-tvec <- seq(0,60,by=0.01)
-behave.start <- 20
+tvec <- seq(0,40,by=0.01)
+behave.start <- base.pars$ARV.start
 
 yini.co <- unlist(calc_yini(base.pars, type = 1))
 

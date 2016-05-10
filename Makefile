@@ -2,7 +2,7 @@
 ### Hooks for the editor to set the default target
 current: target
 
-target pngtarget pdftarget vtarget acrtarget: lancet_plots.Rout 
+target pngtarget pdftarget vtarget acrtarget: lancet_facet.Rout 
 
 ##################################################################
 
@@ -26,9 +26,13 @@ base.plots.Rout: base.sim.Rout plots.R
 %.plots.Rout: %.sim.Rout plots.R
 	$(run-R)
 
+Sources += legend.txt
+
 lancet_sims.Rout: base.parms.Rout model.Rout functions.Rout simFuns.Rout lancet_sims.R
 
 lancet_plots.Rout: lancet_sims.Rout lancet_plots.R
+
+lancet_facet.Rout: lancet_plots.Rout lancet_facet.R
 
 ######################################################################
 
