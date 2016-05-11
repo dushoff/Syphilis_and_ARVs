@@ -1,4 +1,3 @@
-dev.off(); pdf(pdfname, height=5)
 
 library("ggplot2"); theme_set(theme_classic())
 
@@ -15,7 +14,7 @@ levels(facetFrame$Susc) <- c(
 	"No biological effect", "Increased susceptibility"
 )
 
-print(
+fplot <- (
 	ggplot(facetFrame , aes(time, value, col = scenario))
 	+ geom_line()
 	+ labs(x = "Time (years)", y = "Prevalence")
@@ -26,4 +25,8 @@ print(
 	+ facet_wrap (~ Susc)
 	# + geom_vline(x=20, linetype="dotted")
 )
+
+dev.off(); pdf(pdfname, height=5)
+print(fplot)
+# print(fplot + facet_wrap (~ Susc, nrow=2))
 
