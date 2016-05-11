@@ -21,9 +21,7 @@ fplot <- (
 	+ scale_color_manual(name="Behavior change"
 		, values=c("black", "red", "blue")
 	)
-	# + scale_colour_discrete(name="Behavior change")
 	+ facet_wrap (~ Susc)
-	# + geom_vline(x=20, linetype="dotted")
 )
 
 dev.off(); pdf(pdfname, height=5)
