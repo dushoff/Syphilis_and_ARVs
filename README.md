@@ -1,7 +1,5 @@
-Models that investigate the interacting dynamics of syphilis, HIV, and HIV treatment
+This repo provides code and documentation for models accompanying a research project on syphilis and ARVs led by Michael Rekart.
 
-Starting points: 
+Code here is copyright 2016 by Sang Woo Park and Jonathan Dushoff. It will be released for non-commercial use with attribution when the related paper is published. If you wish to use it before that, please contact us.
 
-* Grassly: http://www.ncbi.nlm.nih.gov/m/pubmed/15674292/ drop/nature03072.pdf
-
-* Garnett: http://www.ncbi.nlm.nih.gov/m/pubmed/9101629/ drop/Garnett.pdf
+[Draft supplementary material to explain the model and accompany the paper.](
