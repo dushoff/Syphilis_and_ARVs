@@ -16,6 +16,7 @@ base.only.sim <- lsoda(yini.co
 slow.pars = transform(base.pars
 	, pc.increase = 3, behave.start = behave.start, T_c = 3
 ) 
+
 base.slow.sim <- lsoda(yini.co
 	, func = g.syph
 	, parms = slow.pars
