@@ -32,10 +32,20 @@ local({
 })
 @
 
-\title{Appendix}
+\date{}
 
 \begin{document}
-\maketitle
+\begin{flushleft}
+
+{\Large
+\textbf{Do ARVs Increase Susceptibility to Syphilis?\\
+Supporting Information}
+}
+\newline
+\\
+Michael L. Rekart, Wilfred Ndifon, Robert C. Brunham, Jonathan Dushoff, Sang Woo Park, Sanjana Rawat, Caroline E. Cameron
+
+\end{flushleft}
 
 \section{Model}
 
