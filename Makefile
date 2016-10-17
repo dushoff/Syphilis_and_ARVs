@@ -33,21 +33,27 @@ paper_sims.Rout: base.parms.Rout model.Rout functions.Rout simFuns.Rout paper_si
 paper_plots.Rout: paper_sims.Rout paper_plots.R
 
 # Current paper figure has facets
+
+# Make a pdf and eps using R commands
 paper_facet.Rout: paper_plots.Rout paper_facet.R
+paper_facet.eps: paper_facet.Rout ;
 
-## Efforts to make a nice, non-pdf figure!
-# paper_facet.eps: paper_facet.Rout ;
-
+# Make an eps using pdftops
 paper_facet.Rout.eps: paper_facet.Rout.pdf Makefile
 	pdftops -eps -r 1200 $< $@
 
+# Use imagemagick
 paper_facet.Rout.tiff: paper_facet.Rout.pdf Makefile
 	convert -density 600 -trim $< -quality 100 $@
 
+# Use ggsave
 paper_gg.Rout: paper_facet.Rout gg.R
 	$(run-R)
-
 paper_gg.eps: paper_gg.Rout ;
+
+fancy = paper_facet.Rout.pdf paper_facet.Rout.eps paper_facet.eps paper_facet.Rout.tiff paper_gg.eps
+
+pushfancy: $(fancy:%=%.gp)
 
 ######################################################################
 

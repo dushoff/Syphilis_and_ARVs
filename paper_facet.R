@@ -1,7 +1,4 @@
-dev.off(); pdf(pdfname, height=5)
 
-# psname <- paste0(rtargetname, ".eps")
-# dev.off(); postscript(psname, height=5)
 
 library("ggplot2"); theme_set(theme_classic())
 
@@ -28,7 +25,11 @@ fplot <- (
 	+ facet_wrap (~ Susc)
 )
 
+dev.off(); pdf(pdfname, height=5)
 print(fplot)
-# print(fplot + facet_wrap (~ Susc, nrow=2))
+
+psname <- paste0(rtargetname, ".eps")
+dev.off(); postscript(psname, height=5)
+print(fplot)
 
 # rdsave(fplot)
