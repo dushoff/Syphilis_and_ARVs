@@ -2,7 +2,7 @@
 ### Hooks for the editor to set the default target
 current: target
 
-target pngtarget pdftarget vtarget acrtarget: paper_facet.Rout 
+target pngtarget pdftarget vtarget acrtarget: paper_gg.eps 
 
 ##################################################################
 
@@ -32,7 +32,22 @@ paper_sims.Rout: base.parms.Rout model.Rout functions.Rout simFuns.Rout paper_si
 
 paper_plots.Rout: paper_sims.Rout paper_plots.R
 
+# Current paper figure has facets
 paper_facet.Rout: paper_plots.Rout paper_facet.R
+
+## Efforts to make a nice, non-pdf figure!
+# paper_facet.eps: paper_facet.Rout ;
+
+paper_facet.Rout.eps: paper_facet.Rout.pdf Makefile
+	pdftops -eps -r 1200 $< $@
+
+paper_facet.Rout.tiff: paper_facet.Rout.pdf Makefile
+	convert -density 600 -trim $< -quality 100 $@
+
+paper_gg.Rout: paper_facet.Rout gg.R
+	$(run-R)
+
+paper_gg.eps: paper_gg.Rout ;
 
 ######################################################################
 
