@@ -38,7 +38,7 @@ local({
 \begin{flushleft}
 
 {\Large
-\textbf{Do ARVs Increase Susceptibility to Syphilis?\\
+\textbf{A double-edged sword: does highly active antiretroviral therapy contribute to syphilis incidence by impairing immunity to Treponema pallidum?\\
 Supporting Information}
 }
 \newline
